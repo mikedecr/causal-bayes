@@ -1,0 +1,184 @@
+---
+title: "Outline for Causal Bayes Paper"
+output:
+  knit: function() stop("NO KNIT")
+---
+
+
+Outline
+
+- *Hook*
+  - ?
+  - outline is
+    - lay out the positive argument
+    - identify sources of friction
+    - practical advice for navigating
+    - demonstration
+  - Assumptions about reader knowledge?
+  - *Introduction to both realms*
+    - potential outcomes
+    - Bayes (variable/parameter philosophy)
+- **Goals and Tactics**
+  - *Shared goals vs different tactics*
+    - Best parameter estimates
+      - what is best?
+    - how each does it
+      - "Identification by design" (Samii 2016)
+      - Improvement using prior information
+        - Bayes is not a tool for "observational" analysis, nor are priors able to address confounding in any coherent, general way (Rubin 1991)
+      - biasing vs de-biasing
+        - designs ≠ estimators
+        - good data better than good model (Gelman), but good model makes good data better
+        - sometimes an easy nonparametric estimator is implied by identification analysis, and other times not as easy
+        - All problems have some natural constraints on what the parameter values could be, and using this information can make a difference
+    - We do want to make posterior inferences
+    - regularization
+    - choice of family using entropy/information principles
+    - Logit example?
+      - do we cover the parameter more with like a normal(0, 4) prior than with a flat prior?
+  - *Potential outcomes with Bayesian Language*
+    - `McElreath "without frequentist language" lecture?`
+- **Epistemic Norms and Modeling Assumptions**
+  - *Within Causal Inference*
+    - Skepticism of modeling assumptions
+      - confounding
+      - vs. estimator bias
+      - identification model ≠ statistical model
+    - Simplicity of methods
+      - Difference in means, linearity
+      - but not always. mediation, matching, synthetic control
+      - Repeated sampling properties of estimators depend on outcome distribution so linearity isn't always best
+    - Modesty of claims
+      - diff in means is one thing
+      - Secondary findings are often very model driven 
+      - e.g. mediation analyses, analyses with controls
+    - Researcher degrees of freedom
+      - Mean-zero priors are always going to be more conservative than flat priors
+      - holding the functional form fixed, information imposes more skepticism of the data
+    - fixed v random effects
+  - *Misunderstandings about Bayes*
+  - *Bayes*
+    - Assumptions
+      - state them for the record
+      - entropy
+      - but? admit that it doesn't get you out of confounding
+      - doesn't have to be *more* assumptions, just making them Bayesian and explicit
+    - Conservatism in a different form
+      - modeling all sources of variance
+      - regularization
+      - "focused skepticism" of getting yanked by "nonsense" parameters
+    - What Bayes isn't doing
+      - fixing confounding
+      - using priors to stack in favor of hypotheses
+- **Practical Bayes for Skeptical Causal Inference**
+  - *Misunderstandings*
+    - Beliefs
+    - Researcher degrees of freedom
+      - Is something "wrong" because Bayes is used?
+        - For ppl who do Bayes, it isn't like frequentism is default and Bayes is something that you do when something goes wrong
+        - it's just a different framework for statistical inference
+        - It affects what we can and can't say about the results, and we happen to care about this
+      - Is there more potential for differing results?
+        - One the one hand, potentially, but that's research
+        - The point is to scrutinize the model's exposed assumptions
+        - sometimes the results *will* look differently, sometimes they will look similar, it depends on the problem
+  - *Focus on model-heavy designs*
+    - "we don't need priors if we have the design"
+    - You won't replace the DIMs, so don't try
+  - *Controlling assumptions with WIPs and PPCs*
+    - WIPs
+      - Natural constraints
+      - Parameterization and explosive priors
+      - Flat priors even when on the right scale
+      - Examples:
+        - Vote shares
+        - Logistic regression
+        - Variances
+      - Maximum entropy
+    - PPCs
+    - practice safe GLMs
+  - *Conservatism with regularization*
+    - overfitting: worse in-sample fits, better out-sample fits
+    - WAIC
+  - *Multiple sources of variance*
+    - repeated obs
+    - clusters
+    - blocks
+    - other levels of heterogeneity (treatment level? check on that)
+    - pooling
+  - *Sensitivity testing for ambiguous estimates using priors*
+    - You form different conclusions from different starting points
+  - *Direct posterior inference*
+    - there's no substitute
+    - type-M and -S errors framework given crises in bias and replication
+  - *Bayes factors*
+    - the "updating factor" between prior odds and posterior odds
+  - *When to do it*
+    - model-heavy designs
+    - cluster-randomization
+    - repeated observations
+    - many treatments (multiple comparisons)
+    - secondary analyses (which tend to rely more on models and controls)
+    - stabilizing things when you're slicing and dicing in some robustness check
+- **Doing CBE**
+  - *RDD*
+  - *Conjoint*
+- **Difficult or unresolved issues**
+  - Pre-analysis and prior checking
+  - Non-Bayesian methods with similar benefits
+    - Cross-validation and regularized estimators
+  - What about randomization inference?
+- **Conclusion**
+
+
+Read and incorporate
+
+- elicited priors
+- high stakes experiments we want to get this right
+
+
+
+- Incremental research via experimentation and other causal inference approaches (the promise of "empirical Bayes"?)
+
+Social Science Citation Index 
+TESS search
+
+  - Subjective priors & unhelpful postmodernism
+
+    - beliefs vs "information"
+
+
+Hesitations
+
+- let data speak
+- conservatism
+- nonparametric
+- power analysis and expectations of coverage
+- minimal assumptions
+- simplified assumptions
+
+
+answer: 
+
+  - Power analysis
+- "thin" models with weakly informative priors
+    - Inference paradigm
+    - Computational convenience
+
+
+   
+   - Desire
+  - pollinating of strong minds and strong methods 
+
+
+
+What's the point of including estimates in your "posterior" that make no sense? 
+
+
+# positive case
+
+<https://statmodeling.stat.columbia.edu/2015/12/05/28262/> 
+
+- What I’m saying is that, whatever causal inference framework is being used, I think when extrapolating it is appropriate to use hierarchical models to partially pool. I don’t think of hierarchical models as a competitor or alternative to your causal inference methods; I see hierarchical modeling as an approach that can be used under any framework, whether it be yours or Rubin’s or some other causal framework used in epidemiology, or whatever.
+
+

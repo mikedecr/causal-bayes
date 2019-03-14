@@ -1,0 +1,229 @@
+---
+title: NOTES on CAUSAL BAYES
+author:  Michael G. DeCrescenzo
+date: "`r Sys.Date()`"
+output:
+  knit: function() stop("NO KNIT")
+---
+
+
+# Jessica
+
+- is this a way to ensure that papers are reviewed by friends
+- effort invested
+- driving on the left vs right
+- Maybe advocating a more "show me why I'm wrong" stance?
+- Maybe it's two papers
+  - 1) For causal inference: legalize it
+  - 2) For Bayesians: here's practical advice
+
+
+
+# Debates about p-values and inference
+
+Banning p-values
+
+- Journal bans p-values, studies now suck: <https://daniellakens.blogspot.com/2016/02/so-you-banned-p-values-hows-that.html>
+- The problem is that the studies suck or that analysts have poor understanding of their statistical allowances when they use certain methods?
+  - "The absence of p-values has not prevented dichotomous conclusions, nor claims that data support theories (which is only possible using Bayesian statistics), nor anything else p-values were blamed for in science. After reading a year’s worth of BASP articles, you’d almost start to suspect p-values are not the real problem. Instead, it looks like researchers find making statistical inferences pretty difficult, and forcing them to ignore p-values didn’t magically make things better."
+
+
+# Frequentism
+
+- Gill 2012 "There are almost no Frequentists in political science"
+
+
+
+# Where do Bayes and experiments go together in political science?
+
+- Theories of causation
+  - Rubin (1978) posterior over unknown potential outcomes
+  - Gerring (2005)
+- Causal heterogeneity, model-averaging, and meta-analysis
+  - hierarchical models Western (1998)
+    - in Econ: lots by Meager
+  - Green and whoever BART (2012?)
+  - Montgomery, Hollenbach, and Ward (2012 PA) ensemble BMA
+  - Grimmer, Westwood, Messing (2017) include Bayesian models in ensemble models
+- Qualitative analysis and process tracing
+  - Humphreys and Jacobs (2015)
+  - Fairfield and Charman (2017)
+  - Bennett (2015); book chapter
+- "Bayesian updating" in experiments and campaigns but no Bayesian inference
+  - Gerber, Green, Kaplan (2002)
+  - Bullock (2007 dissertation, other things?)
+  - Hill (2017?)
+
+Where is Bayes or Bayesian thinking snubbed?
+
+- Declare design? (investigate)
+  - if the focus is p-value on the effect, honestly fuck that
+- Randomization Inference
+
+
+
+# Bayesian causal model
+
+- Rubin 1978
+- Rubin 2006/2005? whatever it is?
+- Rubin, Wang, Yin, and Zell 2013 oxford handbook
+
+
+# Reasons for Bayes
+
+- Past studies inform the treatment effect
+  - sufficient but not necessary
+- forms of causal relationships (Gerring 2005)
+  - dangerous ground maybe
+  - Bayes factors not always the best judge in M-open
+- sensitivity and type-2 error
+  - null findings in causal designs 
+    - (Anastasopoulos 2016 gender RDD)
+
+
+# Reasons against Bayes
+
+- reviewer skepticism: <https://twitter.com/andrewheiss/status/1091069919523827712>
+- researcher degrees of freedom
+- difficulty with PAPs/pre-registration
+- time consuming 
+  - you have to think
+  - can't run a thousand versions
+  - *maybe this is good* and also *runs against researcher DFs* (invest in the model you trust)
+  - but maybe incompatible w/ review process where reviewers want a hundred different things
+
+
+# Parametric-ness
+
+By default better when parametric models are needed
+
+- Keele 2015: 
+  - "While identification is, strictly speaking, separate from estimation, an emphasis on nonparametric identification tends to influence estimation. When nonparametric identification holds, it implies a valid nonparametric estimator. Thus, if a convincing case can be made for nonparametric identification, in theory nonparametric estimation provides a straightforward way to estimate the identified treatment effect."
+  - but also "This illustrates why statistical techniques are secondary to identification strategies. The credibility of the estimator is often a function of the identification strategy, and many methods of estimation have some applicability across different identification strategies."
+
+
+
+
+# Pooling treatments
+
+- Same treatment, different settings
+  - memoryless model: all effects "suggestive" but insignificant
+  - combine and do fixed effects, doesn't help you
+  - partial pooling
+- How many papers are in file drawers?
+
+
+
+
+# Question: Bayesian Causal Mediation?
+
+Often violate assumptions by having "more than 100%" mediation
+
+- but is this a statistical artifact? 
+- If we can impose some restrictions on the values of these parameters can we often get much better behaved mediation analyses that make more sense and thus are more trustworthy?
+
+Get nonsense by having a negative direct effect and a more than 100% mediated effect?
+
+Any multi-equation model is easily incorporated into a Bayesian framework.
+
+- Parameter uncertainty flows from one equation to the next
+- all parameters and functions of parameters contain full posterior uncertainty
+
+
+Sensitivity parameter
+
+- Improve your estimation of the mediation effect
+- Not just *conditional* on the sensitivity parameter
+- but also *marginal* of the sensitivity parameter
+
+
+# As we get better at doing experiments, they will get more complex
+
+- causal mediation and moderation
+- conjoint experiments
+- compliance
+
+
+# Slides:
+
+- rejection: <https://twitter.com/andrewheiss/status/1091069919523827712>
+
+**must deal with detractors**
+
+- not just "use Bayes" but make the argument that the goals are the same and that Bayes is allowed
+
+
+From Notes.app
+
+- Essay: why not Bayesian experiments/causal inference?
+  - areas of philosophical friction
+  - direct estimation of effects (supported parameters)
+  - null/negligible effects (supported parameters, ROPE)
+  - significance is NOT the point of experiments, but investigating what the data support
+
+
+Outline:
+
+- Intro
+- What is the benefit?
+  - all of the benefits of Bayesian inference applied to experimental research
+  - fruitful science of CI unleashed on the technical creativity of the Bayesian community if we tear down the wall
+  - make a space for Bayesians in causal inference work, make a space for causal inference in the Bayesian community
+- Goals of each approach
+  - Experiments
+    - de-biasing the design (not always ≠ de-biasing the estimator)
+    - actually: best causal effects (includes matching, synthetic control)
+  - Bayes
+    - Uncertainty about all parameters (and multilevel models)
+    - including prior information to rule out nonsense
+    - best inferences about model parameters
+  - How they are compatible
+    - even RCTs can have small samples, multiple variance terms
+    - Bayes isn't about stacking the deck in favor, but mostly regularization and proliferating uncertainty
+    - regularization and the rhetoric of statistical conservatism
+      - unbiasedness is not conservatism
+      - what's the goal: reaching a threshold of evidence or getting the unbiased effect? We only want the latter because it's in service of the former. Biased estimators also help us get to the former.
+- Reconciling misunderstandings (fix me)
+  - Causal inf. is about de-biasing the design, not the estimator per se
+    - identification ≠ estimation
+    - confounding ≠ noise
+    - data are often created by more complex models than mean diffs (proliferating uncertainty)
+  - even RCTs can have small samples, multiple sources of variance
+  - Bayes isn't about stacking the deck in favor, it's mostly about uncertainty and regularization (which is stacking the deck against)
+- Examples
+  - Observational data and PPC for priors (especially with coarse scales!)
+- Problems to address
+  - rhetorical parsimony vs maximalistic capabilities
+    - data models are often more complicated, but how far should we go
+    - consistency problems are dealt with by "random" effects (cites omg)
+
+
+(A) Who's got reading recs discussing the compatibility of Bayes w/ causal inference/experiments in political science (& improvement thereof)? 
+
+(B) Would you read/entertain arguments that encourage these camps to work together more?
+
+More thoughts in ensuing thread:
+
+
+
+I sense that a latent view in polisci is that Bayes is something that observational researchers do, while causal inf people care about unbiasedness, so these things don't go together. Do you pick up on this too? I don't agree w/ it.
+
+
+
+Growing interest in de-biasing *research designs* has plenty of benefits, as does work that focuses on de-biasing *estimators*, but these aren't always the same. There's plenty of room to pursue the former (which I see as the larger goal of causal inf) while relaxing the latter.
+
+
+
+Experiments and causal inf. studies regularly have sample size issues, multiple levels of variance, irregularities in assignment or compliance that could be structurally modeled. These are all second nature w/ Bayesian approach (not to mention efficient).
+
+
+
+Think about other disciplines (say, psych) whose the push toward Bayes is primarily in experimental settings, unlike polisci where the objective of de-biasing the design brings w/ it an idea that we should always de-bias estimators as well.
+
+
+
+De-biasing designs is good, but does de-biasing designs require that we always de-bias the estimators? If we construe the goal of causal inf as "getting the best parameter estimates" then isn't Bayes more compatible than we observe in practice?
+
+
+
+Seems to me like there's plenty of room to de-bias designs and still employ good prior information
