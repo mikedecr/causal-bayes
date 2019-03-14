@@ -1,0 +1,80 @@
+---
+# global document parameters
+title: |
+  MPMC Proposal: The Compatibility of Causal Inference and Bayesian Analysis in Political Science
+author: 
+- Michael G. DeCrescenzo^[Ph.D. Candidate, Political Science, University of Wisconsin--Madison. Thanks to William T. Christiansen, Andrew Heiss, Anna Meier, Laura Meinzen-Dick, Daniel Putman, and Zach Warner for helpful feedback.]
+date: |
+  Submitted January 18, 2019
+# abstract: 
+output:
+  bookdown::pdf_document2: 
+    latex_engine: pdflatex
+    toc: false
+    keep_tex: true
+    includes: 
+      in_header: 
+        - ../../assets/rmd-preamble.tex
+    number_sections: false # true?
+    highlight: kate
+    fig_caption: true
+    citation_package: natbib
+    # citation_package: biblatex
+
+  
+# \begin{flushleft} Keywords: voting, party identification, mobilization, persuasion, party coalitions, gender gap \end{flushleft} -->
+bibliography: "/Users/michaeldecrescenzo/Dropbox/bib.bib"
+# biblio-style: chicago-authordate
+biblio-style: "/Users/michaeldecrescenzo/Dropbox/apsr2006.bst"
+fontsize: 12pt
+geometry: margin = 1.in
+indent: true
+linkcolor: violet
+urlcolor: cyan
+citecolor: black
+subparagraph: yes
+# output handled by _output.yml
+---
+
+\onehalfspacing
+
+Introductions to Bayesian inference often use experiments to exemplify the intuition of Bayesian updating.^[
+  The "Eight Schools" SAT coaching experiment and meta-analyses of experiments are conventional examples in many introductions to Bayesian hierarchical modeling [see e.g. @gelman2013:BDA].
+] These narratives often go something like...
+
+> Suppose that a research literature has some hypotheses about the causal effect of $X$ on $Y$. Researchers conduct experiments, each time updating the information they have about their hypotheses, conditional on the experiments they have conducted to date.
+
+\noindent
+Despite the regularity with which professors tell students this story, the discipline has not internalized the lesson. Studies that employ *both* a causal inference framework and Bayesian estimation are exceedingly rare in political science. Why is this the case, and should it be changed? In this proposal, I outline an essay that discusses points of contention between these two methodological camps, makes an argument for viewing causal inference and Bayesian analysis as having fundamentally compatible goals, and exemplifies the benefits of combining both methodological traditions in practical examples.
+
+<!-- ## Causal Inference with Bayesian Estimation -->
+
+Throughout this proposal, I refer to "causal inference" as research designs derived from explicit causal models and assumptions that allow the estimation of causal parameters from data (which include experiments as well as difference-in-differences, instrumental variables, synthetic control, matching, regression discontinuity, and others). I refer to *Bayesian analysis* as statistical models that include models for unobserved parameters (prior distributions) alongside models for observed data (likelihood functions). I refer to "causal inference with Bayesian estimation" (CIBE for short) as causal inference designs whose parameters are estimated using priors. In a Bayesian causal model [@rubin1978bayesian; @imbens-rubin:1997:bayes-compliance], an observed outcome is compared to a posterior distribution of potential outcomes that reflects joint uncertainty over all model parameters. In an applied setting, it should be sufficient to think about a modeling scenario where a causal effect $\beta$ is given a prior distribution $\beta \sim \mathcal{D}\left(\cdot\right)$.
+
+## Compatible Goals
+
+The main argument of the paper is that causal inference and Bayesian estimation, despite their recent siloing in political science, are compatible with one another because they have the same underlying goal: getting the best possible parameter estimates. They pursue this goal using different tactics---causal inference identifies causal parameters by "de-biasing" the research design, while Bayesian analysis improves parameter estimates by incorporating prior information---but the tactics themselves are subordinate to the broader goal.
+
+What would be the advantages of CIBE? How can we do better by combining Bayesian analysis into an already-strong causal inference design? There are a number of ways to answer this question. First, there are practical benefits. The data used in causal inference designs often contain features for which Bayesian models provide practical and intuitive solutions. Multilevel models are an efficient tool to account for clustered randomization, repeated within-subject measures, and other sources of correlated error across observations [see e.g. @green-vavreck:2008:clusters] by modeling multiple sources of variation directly. Because Bayesian models estimate the distribution of all parameters simultaneously, they can naturally proliferate uncertainty through multi-equation modeling routines such as sequential $g$-estimation, instrumental variables, and other multi-equation designs for issues such as treatment non-compliance [@acharya2016explaining; @horiuchi2007designing]. Hierarchical models allow researchers to pool information across similar treatments, which is especially applicable to the analysis of conjoint experiments. This proliferated uncertainty also means that multiple hypothesis testing is second nature, since the analyst can calculate any quantity they desire using the MCMC samples for an arbitrary number of parameters. 
+
+Another way to phrase the benefits of CIBE is philosophical. What *is* the treatment effect? In Bayesian analysis, the posterior distribution directly characterizes the plausibility of treatment effects given the data. This allows researchers to say (on firm philosophical ground) that the treatment effect probably falls within some specified range. Being able to make precise statements about well-identified treatment effects is the goal of causal inference, and CIBE facilitates that goal.
+
+
+## Sources of Tension
+
+Although there are advantages of CIBE, scholars in each camp have distinct norms of analysis that would need to be adjudicated in order to make space for CIBE. Primarily, the objective in causal inference to de-bias the research design extends into other areas of research decision-making; causal inference researchers tend also to prefer unbiased estimators, reflecting their desire to purge their work of any researcher intervention that does not "let the data speak." I describe this ethic in causal inference as a "conservative" preference for simple models and minimal assumptions. Researchers want to be led by the data, not by the model. This fosters a subtle skepticism that Bayesian analysis is used to *defy* data---if the researcher employs enough subjective assumptions, they can conclude anything. 
+
+Is there a way of doing Bayesian analysis that fits the conservative norms of causal inference work without sacrificing the advantages of the Bayesian model? The paper focuses on *weakly informative priors* (WIPs) and *regularizing priors* as two practices that enable researchers to engage in CIBE in harmony with the norms of causal inference. Gelman describes a prior as weakly informative if it is "proper but is set up so that the information it does provide is intentionally weaker than whatever actual prior knowledge is available" [-@gelman2006varianceprior, p. 517]. WIPs are informative enough to rule out estimates that make no sense for the problem at hand (e.g. that exceed the range of your dependent variable), but not so informative that the data can't speak. Regularizing priors, on the other hand, are designed to prevent overfitting by shrinking effects toward zero. These priors introduce a little more bias into the analysis, but the bias is unmistakably conservative. Rhetorically, the purpose of a regularizing prior is to ensure that whatever effects the researcher finds are of a high enough statistical power to overcome a conservative prior.
+
+## Proposed Examples
+
+I propose to walk through two examples of CIBE. First is a re-analysis of a regression discontinuity design by @hall:2018:extremists, using WIPs to show how weak but sensible prior information can contain and stabilize causal effect estimates. Second will be a simulation of data from a conjoint design, which demonstrates how multilevel modeling can be used to account for multiple sources of variance, pool information from similar treatments, and increase the generalizability of causal effect estimates when marginalizing over independent treatment dimensions. 
+
+## What the Paper is not
+
+The purpose of this essay is *not* to convince all practitioners of causal inference methods to use Bayesian methods, nor is it to convince anybody of the "superiority" of Bayesian methods. In fact, the paper recognizes and celebrates the skepticism that causal inference holds toward *any* method that infringes on the methodological conservatism and importance of letting data speak. Rather, the purpose of the paper is to make some space for Bayesian methods in causal inference work. These two camps can make each other better, but they need to talk to one another. Bayesian methods are not inconsistent with the goals, nor are they necessarily inconsistent with the informal norms, of causal inference practitioners. But there does need to be some adjudication of potential disagreements and areas of misunderstanding in order for each camp to benefit from the strengths of the other.
+
+
+
+<!-- bib goes here -->
+\singlespacing
