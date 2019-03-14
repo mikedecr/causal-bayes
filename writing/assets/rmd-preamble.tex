@@ -1,0 +1,81 @@
+% ----------------------------------------------------
+%   a preamble file for use with R Markdown
+% ----------------------------------------------------
+
+% --- text and typography -----------------------
+
+% not actually sure that microtype works!
+% \usepackage{microtype}   % microtypography
+
+\usepackage[lf, mathtabular, minionint]{MinionPro} % serif
+\usepackage{MyriadPro}                             % sans family
+\usepackage[varqu, scaled = 0.95]{zi4}             % mono w/ straight quotes
+% \usepackage{mathptmx} % serif = times (with math)
+% \usepackage{helvet} % sens-serif = helvetica clone
+% \usepackage[varqu, scaled = 0.95]{zi4} % mono w/ straight quotes
+
+% are these needed is using default latex template??
+% \usepackage[utf8]{inputenc} % better interpretation of input characters
+% \usepackage[T1]{fontenc}    % better output glyphs/behaviors
+% I'm not sure how well these two packages work either!
+\usepackage{setspace}
+
+\usepackage{bm}
+
+% --- floats -----------------------
+% included in default template:
+  % \usepackage{booktabs}
+  % \usepackage{longtable}
+\usepackage{dcolumn} % decimal-aligned columns
+\usepackage{rotating}
+\usepackage{placeins}
+
+
+% --- Styles -----------------------
+
+% TITLE
+\usepackage{titling}
+
+  % title field
+  \pretitle{\begin{center} \LARGE}
+  \posttitle{\par\end{center}\vskip 12pt}
+
+  % author field
+  \preauthor{\begin{center}\large}
+  \postauthor{% \\ \normalsize 
+              % \emph{University of Wisconsin--Madison}
+              \par\end{center}}
+
+  % date field
+  \predate{\begin{center}\large}
+  \postdate{\par\end{center}}
+
+% ABSTRACT
+% \usepackage{abstract}
+%   \renewcommand{\abstractname}{}    % clear the title
+%   \renewcommand{\absnamepos}{empty} % originally center
+
+% % SECTIONS
+\usepackage[small, bf]{titlesec}
+  \titleformat*{\subsection}{\bf \itshape}
+  \titleformat*{\subsubsection}{\itshape} 
+  \titleformat*{\paragraph}{\itshape} 
+
+
+
+% --- Other document logic -----------------------
+
+% to-do notes
+\usepackage[colorinlistoftodos, 
+            prependcaption, 
+            obeyFinal,
+            textsize = footnotesize]{todonotes}
+  \presetkeys{todonotes}{color = violet!30}{}
+
+
+% --- bib -----------------------
+
+% natbib declared in RMD: \usepackage{natbib}
+ \bibpunct[: ]{(}{)}{;}{a}{}{,}
+
+
