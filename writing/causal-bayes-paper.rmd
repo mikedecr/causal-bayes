@@ -63,7 +63,7 @@ output:
 \pagenumbering{arabic}
 \onehalfspacing
 
-```{r, eval = FALSE}
+```{r, eval = FALSE, echo = FALSE, include = FALSE}
 rmarkdown::render(here::here("writing", "causal-bayes-paper.Rmd"))
 ```
 
