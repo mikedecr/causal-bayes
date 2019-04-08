@@ -18,10 +18,10 @@ Legwork
   - [ ] Posterior
 - Pooling / Regularization (Reeves et al)
   - [ ] Which priors
-  - [/] PPCs
+  - [ ] PPCs*
   - [x] Estimate
   - [ ] Diagnosis
-  - [/] Posteriors
+  - [ ] Posteriors*
 - Regularized conjoint
   - [ ] Decide if this is gonna make it
 
