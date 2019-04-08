@@ -1,24 +1,24 @@
 
 \.DS_Store
 
+# Bureaucracy
 reading/
-
 writing/conference/Minn/mpmc-2019-proposal\.tex
 
+# knitr helpers
 writing/rmd-cache/
-
 writing/figs/
 
+# tex helpers
 writing/causal-bayes-paper\.log
-
 writing/causal-bayes-paper\.tex
-
 writing/causal-bayes-paper\.aux
-
 writing/causal-bayes-paper\.bbl
-
 writing/causal-bayes-paper\.blg
-
 writing/causal-bayes-paper\.out
-
 writing/causal-bayes-paper\.toc
+
+# compiled model RDS
+code/*/*.rds
+
+
