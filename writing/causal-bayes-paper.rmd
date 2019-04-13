@@ -505,7 +505,7 @@ The second application in this paper is an experimental study of public opinion 
 include_graphics(here("writing", "img", "reeves-trt.png"))
 ```
 
-The original figure of results (from $t$-tests) is shown in Figure&nbsp;\@ref(fig:original-reeves). Treatment effects were all positive, but because most of the one-off effects were statistically insignificant, the authors initially conclude that information about policy instruments or prerogatives has minimal effects. Their interpretation of the effects veers in an informally Bayesian direction when they note the similarity of the effects overall: 
+The original figure of results (from $t$-tests) is shown in Figure&nbsp;\@ref(fig:original-reeves). Treatment effects were all positive, but because most of the one-off effects were statistically insignificant, the authors initially conclude that information about policy instruments or prerogatives has minimal effects. Their interpretation of the effects takes in an informally Bayesian turn when they note the similarity of the effects overall: 
 
 > \onehalfspacing At the same time, [...] the treatment effects displayed in [the figure] are uniformly positive, which suggests that providing more detailed information about the president’s behavior increases public support for that action. Given low levels of public knowledge about the different tools of unilateral action, it is possible that providing respondents with even more specific information about each of them would generate larger differences in levels of support. (p.\ 458)
 
