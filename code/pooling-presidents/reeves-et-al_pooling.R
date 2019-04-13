@@ -30,6 +30,8 @@ box_auth()
 
 # ---- raw data -----------------------
 
+# this data from the appendix (table A4, section 2)
+# It looks like these CIs are thinner than in the main paper?
 raw <- 
   tribble(
     ~ treatment, ~ estimate, ~ conf.low, ~ conf.high,
@@ -92,21 +94,24 @@ stan_data <- raw %>%
 
 
 # ---- models -----------------------
-# two dimensions: 
-# 1. Normal treatments (0, sd) vs t treatments (3, 0, sd)
+
+# done in "eight schools" flavor
+# two dimensions of specification: 
+# 1. Normal treatments (0, sd) vs t treatments (df = 3, 0, sd)
 # 2. SD family, cauchy(0, 1) vs uniform(0, 10)
 
-pool_normal_cauchy <- here("code", "reeves", "schools-normal-cauchy.stan") %>%
+pool_normal_cauchy <- here("code", "pooling-presidents", "schools-normal-cauchy.stan") %>%
   stan_model(verbose = TRUE)
 
-pool_normal_uniform <- here("code", "reeves", "schools-normal-uniform.stan") %>%
+pool_normal_uniform <- here("code", "pooling-presidents", "schools-normal-uniform.stan") %>%
   stan_model(verbose = TRUE)
 
-pool_t_cauchy <- here("code", "reeves", "schools-t-cauchy.stan") %>%
+pool_t_cauchy <- here("code", "pooling-presidents", "schools-t-cauchy.stan") %>%
   stan_model(verbose = TRUE)
 
-pool_t_uniform <- here("code", "reeves", "schools-t-uniform.stan") %>%
+pool_t_uniform <- here("code", "pooling-presidents", "schools-t-uniform.stan") %>%
   stan_model(verbose = TRUE)
+
 
 beepr::beep(2)
 
@@ -115,10 +120,6 @@ pool_normal_uniform
 pool_t_cauchy
 pool_t_uniform
 
-# out-dated
-# eight_schools <- 
-#   stan_model(here("code", "replication", "reeves-8-schools.stan"), 
-#              verbose = TRUE)
 
 # pool_reeves <- estimate(eight_schools, stan_data)
 
@@ -131,6 +132,25 @@ mcmc_t_cauchy <- estimate(model = pool_t_cauchy, data = stan_data)
 mcmc_t_uniform <- estimate(model = pool_t_uniform, data = stan_data)
 
 
+saveRDS(mcmc_normal_cauchy, here("data", "estimates", "reeves", "mcmc_normal_cauchy.RDS"))
+saveRDS(mcmc_normal_uniform, here("data", "estimates", "reeves", "mcmc_normal_uniform.RDS"))
+saveRDS(mcmc_t_cauchy, here("data", "estimates", "reeves", "mcmc_t_cauchy.RDS"))
+saveRDS(mcmc_t_uniform, here("data", "estimates", "reeves", "mcmc_t_uniform.RDS"))
+
+
+# negative treatments?
+list(mcmc_normal_cauchy = mcmc_normal_cauchy, 
+     mcmc_normal_uniform = mcmc_normal_uniform, 
+     mcmc_t_cauchy = mcmc_t_cauchy, 
+     mcmc_t_uniform = mcmc_t_uniform) %>%
+  tibble(model = names(.),
+         stanfit = .) %>%
+  group_by(model) %>% 
+  mutate(samples = map(stanfit, spread_draws, mu)) %>%
+  unnest(samples) %>%
+  summarize(p_neg = mean(mu < 0)) %>%
+  print() %>%
+  saveRDS(here("data", "processed", "negative-hypermeans.Rds"))
 
 all_tidy <- 
   bind_rows(
@@ -226,14 +246,12 @@ ppc_reeves <-
     cauchy_sd = abs(rcauchy(n(), 0, 1)),
     beta_norm_unif = rnorm(n(), mean = 0, sd = 1) * runif(n(), 0, 1),
     beta_norm_cauchy = rnorm(n(), mean = 0, sd = 1) * cauchy_sd ,
-    beta_t_unif = rt(n(), df = 3) * runif(n(), 0, 10),
+    beta_t_unif = rt(n(), df = 3) * runif(n(), 0, 1),
     beta_t_cauchy = rt(n(), df = 3) * cauchy_sd,
     est_norm_unif = mu + beta_norm_unif + beta_hat,
     est_norm_cauchy = mu + beta_norm_cauchy + beta_hat,
     est_t_unif = mu + beta_t_unif + beta_hat,
-    est_t_cauchy = mu + beta_t_cauchy + beta_hat,
-    placebo_centered = rnorm(n(), mu, rcauchy(n(), 0, 1)),
-    placebo_noncenter = mu + rnorm(n(), 0, 1) * rcauchy(n(), 0, 1)
+    est_t_cauchy = mu + beta_t_cauchy + beta_hat
   ) %>%
   gather(key = param, value = draw) %>%
   filter(between(draw, -1, 1) == TRUE,

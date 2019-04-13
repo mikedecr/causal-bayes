@@ -289,6 +289,7 @@ get_prior(dv_win ~ 0 + control + treat + control_rv + treat_rv,
                  absdist > min_ideo_distance))
 
 
+
 win_lm <- lm(dv_win ~ 0 + control + treat + control_rv + treat_rv,
    data = filter(hall_brm, margin < local_margin,
                  absdist > min_ideo_distance))
@@ -298,6 +299,10 @@ win_logit_mle <-
       data = filter(hall_brm, margin < local_margin, 
                     absdist > min_ideo_distance),
       family = "binomial")
+
+
+tidy(win_lm)
+tidy(win_logit_mle)
 
 
 win_flat <- brm(dv_win ~ 0 + control + treat + control_rv + treat_rv, 
@@ -326,6 +331,7 @@ win_logit_flat <-
                                absdist > min_ideo_distance)
   )
 
+
 win_logit <- 
   brm(
     dv_win ~ 0 + control + treat + control_rv + treat_rv, 
@@ -339,7 +345,7 @@ win_logit <-
   )
 
 
-win_logit <- 
+win_logit_prior <- 
   brm(
     dv_win ~ 0 + control + treat + control_rv + treat_rv, 
     family = bernoulli,
@@ -353,11 +359,21 @@ win_logit <-
   )
 
 
-win_lm
-win_flat
-win_trunc
-win_logit
-win_logit_mle
+
+
+win_lm %>%
+  saveRDS(here("data", "estimates", "hall", "brm-win_lm.RDS"))
+win_flat %>%
+  saveRDS(here("data", "estimates", "hall", "brm-win_flat.RDS"))
+win_trunc %>%
+  saveRDS(here("data", "estimates", "hall", "brm-win_trunc.RDS"))
+win_logit %>%
+  saveRDS(here("data", "estimates", "hall", "brm-win_logit.RDS"))
+win_logit_mle %>%
+  saveRDS(here("data", "estimates", "hall", "brm-win_logit_mle.RDS"))
+
+
+# ---- means -----------------------
 
 win_lm %>%
   tidy() %$%
@@ -375,12 +391,51 @@ win_trunc %>%
   tidy() %>%
   (function(x) (x$estimate[2]) - (x$estimate[1]))
 
+win_logit_flat %>%
+  tidy() %>%
+  (function(x) plogis(x$estimate[2]) - plogis(x$estimate[1]))
+
 win_logit %>%
   tidy() %>%
   (function(x) plogis(x$estimate[2]) - plogis(x$estimate[1]))
 
+# ---- variances -----------------------
+win_lm %>% tidy() 
+win_flat %>% tidy()
 
-beepr::beep(2)
+
+list(win_flat = win_flat,
+     win_trunc = win_trunc, 
+     win_logit_flat = win_logit_flat, 
+     win_logit = win_logit) %>%
+  tibble(spec = names(.),
+         brm_fit = .) %>%
+  group_by(spec) %>% 
+  mutate(wide = map(brm_fit, spread_draws, b_control, b_treat)) %>%
+  unnest(wide) %>%
+  mutate(
+    b_control = ifelse(str_detect(spec, "logit"), plogis(b_control), b_control),
+    b_treat = ifelse(str_detect(spec, "logit"), plogis(b_treat), b_treat),
+    diff = b_treat - b_control) %>%
+  gather(key = param, value = value, b_control, b_treat, diff) %>%
+  filter(spec %in% c(
+                     # "win_logit_flat", 
+                     "win_trunc",
+                     "win_flat"
+                     )) %>%
+  ggplot(aes(x = value)) +
+    facet_wrap(~ param, scales = "free") +
+    geom_histogram(aes(fill = spec),
+                   position = "identity",
+                   alpha = 0.7,
+                   binwidth = .05,
+                   boundary = 1,
+                   color = "black", size = 0.25) +
+    scale_fill_manual(values = c("win_flat" = purp, "win_trunc" = yel)) +
+    scale_x_continuous(breaks = seq(-1, 1, .5))
+    # viridis::scale_fill_viridis(discrete = TRUE, option = "magma", end = 0, begin = 0.)
+
+
 
 
 
