@@ -12,17 +12,19 @@ Legwork
 
 - WIPs (Hall)
   - [x] Decide which interventions (unif, logit)
-  - [ ] Priors and PPCs
-  - [ ] Estimate 
-  - [ ] Diagnoses
-  - [ ] Posterior
+  - [ ] Priors and PPCs (?)
+  - [x] Estimate 
+  - [ ] Diagnoses (appendix)
+  - [x] Posterior figs
+  - [ ] Posterior R inline
+  - [ ] Replace "intro" code with brm (or clean it up, whatever)
 - Pooling / Regularization (Reeves et al)
-  - [ ] Which priors
-  - [ ] PPCs*
+  - [x] Which priors
+  - [ ] PPCs into paper somewhere (ugh)
   - [x] Estimate
-  - [ ] Diagnosis
-  - [ ] Posteriors*
-- Regularized conjoint
+  - [ ] Diagnosis (appendix)
+  - [x] Posteriors
+- Regularized conjoint (cut)
   - [ ] Decide if this is gonna make it
 
 
@@ -32,11 +34,11 @@ Writing
   - What's the audience
   - What's the purpose (argument vs. explanation vs. tactical demonstration)
   - What needs more careful explanation or (yuck) "hand-holding"
-- [ ] Intro
+- [x] Intro
   - onboarding in the right place?
-- [ ] Shared goals
-- [ ] Norm clash
-- [ ] Examples
+- [x] Shared goals
+- [x] Norm clash
+- [x] Examples
 - [ ] Going forward
   - Nonparametrics?
   - Bayesian ML tactics?
