@@ -7,33 +7,41 @@ output:
 
 Outline
 
-- *Hook*
-  - ?
-  - outline is
-    - lay out the positive argument
-    - identify sources of friction
-    - practical advice for navigating
-    - demonstration
+- **Intro**
+  - *Hook?*
+    - value of experiments discussed as degree of updating
+    - Bayesian updating often uses experimental research as toy examples
+  - outline
   - Assumptions about reader knowledge?
   - *Introduction to both realms*
-    - potential outcomes
-    - Bayes (variable/parameter philosophy)
 - **Goals and Tactics**
   - *Shared goals vs different tactics*
     - Best parameter estimates
-      - what is best?
+      - what is best? Unconfounded by design and plausible in estimation
     - how each does it
       - "Identification by design" (Samii 2016)
-      - Improvement using prior information
+        - identification analysis: typically conditional independence (identifying variation) and positivity (overlap)
+        - internal validity and "pseudo-facts" (identifying variation)
+        - external validity, "pseudo-generalization" (common support/positivity/model dependence)
+        - Regression based analysis suffers from little overlap in the effective sample (positivity), irresponsible use or interpretation of covariates; the covariates included and the interpretation of the effect depend greatly on the assumed causal graph among the covariates (post-treatment, whatever Nyhan, ABS, Samii, Keele DAG)
+        - PILLARS
+          - identification by design: how do we get identifying variation
+          - specificity of causal facts: what is the variation of the TE being returned?
+      - the posterior distribution
+        - improvement with priors
         - Bayes is not a tool for "observational" analysis, nor are priors able to address confounding in any coherent, general way (Rubin 1991)
-      - biasing vs de-biasing
+        - we make assumptions because they get us somewhere valuable?
+      - biasing and de-biasing
         - designs ≠ estimators
         - good data better than good model (Gelman), but good model makes good data better
-        - sometimes an easy nonparametric estimator is implied by identification analysis, and other times not as easy
+        - sometimes an easy nonparametric estimator is implied by identification analysis, and other times not as easy (Keele PA?)
         - All problems have some natural constraints on what the parameter values could be, and using this information can make a difference
     - We do want to make posterior inferences
+      - you really do want $p(\theta \mid y)$
     - regularization
     - choice of family using entropy/information principles
+    - Where do we see overlap already?
+      - examples
     - Logit example?
       - do we cover the parameter more with like a normal(0, 4) prior than with a flat prior?
   - *Potential outcomes with Bayesian Language*
@@ -46,17 +54,24 @@ Outline
       - identification model ≠ statistical model
     - Simplicity of methods
       - Difference in means, linearity
-      - but not always. mediation, matching, synthetic control
+      - but not always. mediation, matching, synthetic control all have model components
       - Repeated sampling properties of estimators depend on outcome distribution so linearity isn't always best
     - Modesty of claims
       - diff in means is one thing
       - Secondary findings are often very model driven 
       - e.g. mediation analyses, analyses with controls
+      - "Pattern Specificity" (keele, Rosenbaum, Cook/Shadish) as actually a set of priors
     - Researcher degrees of freedom
       - Mean-zero priors are always going to be more conservative than flat priors
       - holding the functional form fixed, information imposes more skepticism of the data
     - fixed v random effects
-  - *Misunderstandings about Bayes*
+  - *Clarifications about Bayes*
+    - BCI is benign and banal
+    - against "subjective"
+    - "Subjectivist" objections are really responding to a regime of priors that probably we wouldn't want to be using for these circumstances
+      - Kadane 2008: "As human beings, we are not endowed with the ability to identify objective truth. Thus to treat priors and likelihoods as subjective statements of belief is merely to admit what is manifestly the case."
+  - *More general retorts*
+    - unbiasedness
   - *Bayes*
     - Assumptions
       - state them for the record
@@ -67,6 +82,8 @@ Outline
       - modeling all sources of variance
       - regularization
       - "focused skepticism" of getting yanked by "nonsense" parameters
+    - Designs are downstream from priors?
+      - the decision to do $a$ or $b$ enter because the researcher has priors about what would happen if not doing those things. Sometimes those decisions can be incorporated into the model and given a prior
     - What Bayes isn't doing
       - fixing confounding
       - using priors to stack in favor of hypotheses
@@ -97,15 +114,21 @@ Outline
       - Maximum entropy
     - PPCs
     - practice safe GLMs
-  - *Conservatism with regularization*
-    - overfitting: worse in-sample fits, better out-sample fits
-    - WAIC
-  - *Multiple sources of variance*
-    - repeated obs
-    - clusters
-    - blocks
-    - other levels of heterogeneity (treatment level? check on that)
-    - pooling
+  - *Hierarchical modeling*
+    - multiple sources of variation
+      - repeated obs
+      - clusters
+      - blocks
+      - other levels of heterogeneity
+    - partial pooling
+      - combining information so as not to throw away information
+    - regularization
+      - overfitting: worse in-sample fits, better out-sample fits
+      - WAIC
+      - fundamentally conservative
+  - *questions I still have*
+    - reference priors/default priors/jeffreys priors
+    - objective/subjective bayes
   - *Sensitivity testing for ambiguous estimates using priors*
     - You form different conclusions from different starting points
   - *Direct posterior inference*
@@ -122,7 +145,11 @@ Outline
     - stabilizing things when you're slicing and dicing in some robustness check
 - **Doing CBE**
   - *RDD*
+    - we happen to get similar-ish effects
+    - but we ruled out impossibilities
+    - So we feel better because we actually did the work
   - *Conjoint*
+  - *List experiment?*
 - **Difficult or unresolved issues**
   - Pre-analysis and prior checking
   - Non-Bayesian methods with similar benefits
@@ -153,6 +180,13 @@ Hesitations
 - let data speak
 - conservatism
 - nonparametric
+  - Mostly Harmless (Business school) for a defense of parametric modeling
+  - start with the nonparametric model and build assumptions from there? Or like, what evidence do you have that the nonparametric model is a bad idea or is infeasible?
+  - You can always assume that the estimate is a draw from the true effect size, so you can compute the nonparametric estimate and then weight it against the prior. This is what the "eight schools" example does and what I'm doing in the Reeves et al. example
+  - Even "semi-parametric" designs contain a number of threshold decisions that could be made fuzzy with reasonable priors
+    - RD bandwidth (spike prior)
+    - Covariate matching calipers (spike prior)
+    - propensity score matching (propensity)
 - power analysis and expectations of coverage
 - minimal assumptions
 - simplified assumptions
@@ -173,6 +207,13 @@ answer:
 
 
 What's the point of including estimates in your "posterior" that make no sense? 
+
+
+# Complexity
+
+Not all experiments or causal inference designs are simple
+
+Conjoint
 
 
 # positive case

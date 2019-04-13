@@ -7,15 +7,22 @@ output:
 ---
 
 
-# Jessica
+
+# Input from others
+
+view from applied CI
 
 - is this a way to ensure that papers are reviewed by friends
 - effort invested
+  - but causal inference also??
 - driving on the left vs right
-- Maybe advocating a more "show me why I'm wrong" stance?
+  - so the goal is to show that NO this is not right
+  - Maybe advocating a more "show me why I'm wrong" stance?
 - Maybe it's two papers
   - 1) For causal inference: legalize it
   - 2) For Bayesians: here's practical advice
+
+
 
 
 
@@ -26,6 +33,8 @@ Banning p-values
 - Journal bans p-values, studies now suck: <https://daniellakens.blogspot.com/2016/02/so-you-banned-p-values-hows-that.html>
 - The problem is that the studies suck or that analysts have poor understanding of their statistical allowances when they use certain methods?
   - "The absence of p-values has not prevented dichotomous conclusions, nor claims that data support theories (which is only possible using Bayesian statistics), nor anything else p-values were blamed for in science. After reading a year’s worth of BASP articles, you’d almost start to suspect p-values are not the real problem. Instead, it looks like researchers find making statistical inferences pretty difficult, and forcing them to ignore p-values didn’t magically make things better."
+
+
 
 
 # Frequentism
@@ -45,6 +54,9 @@ Banning p-values
   - Green and whoever BART (2012?)
   - Montgomery, Hollenbach, and Ward (2012 PA) ensemble BMA
   - Grimmer, Westwood, Messing (2017) include Bayesian models in ensemble models
+- Multilevel inference!
+  - Marble et al
+  - Do cluster-robust errors assume that cluster means are uncorrelated with other covariates?
 - Qualitative analysis and process tracing
   - Humphreys and Jacobs (2015)
   - Fairfield and Charman (2017)
@@ -92,6 +104,29 @@ Where is Bayes or Bayesian thinking snubbed?
   - *maybe this is good* and also *runs against researcher DFs* (invest in the model you trust)
   - but maybe incompatible w/ review process where reviewers want a hundred different things
 
+# Confusions about Bayes
+
+Random parameters: 
+
+- <https://stats.stackexchange.com/questions/83731/would-a-bayesian-admit-that-there-is-one-fixed-parameter-value>: "The Bayesian conception of a probability is not necessarily subjective (c.f. Jaynes). The important distinction here is that the Bayesian attempts to determine his/her state of knowledge regarding the value of the parameter by combining a prior distribution for its plausible value with the likelihood which summarises the information contained in some observations. Hence, as a Bayesian, I'd say that I am happy with the idea that the parameter has a true value, which is not known exactly, and the purpose of a posterior distribution is to summarise what I do know about its plausible values, based on my prior assumptions and the observations."
+
+
+Time consuming
+
+- yes
+- but that's good
+- runs against researcher DFs
+- It's important to do the right thing even when it doesn't matter
+
+
+Confounding:
+
+- No it doesn't
+- Lean on Rubin
+
+
+
+
 
 # Parametric-ness
 
@@ -110,9 +145,12 @@ By default better when parametric models are needed
   - memoryless model: all effects "suggestive" but insignificant
   - combine and do fixed effects, doesn't help you
   - partial pooling
+    - White et al 2015, voter ID audit
 - How many papers are in file drawers?
 
+# General bias/variance
 
+We don't take it lying down. The amount of bias is the researcher's choice
 
 
 # Question: Bayesian Causal Mediation?
@@ -127,6 +165,7 @@ Get nonsense by having a negative direct effect and a more than 100% mediated ef
 Any multi-equation model is easily incorporated into a Bayesian framework.
 
 - Parameter uncertainty flows from one equation to the next
+- This is more conservative than delta method in any case where things aren't totally normal?
 - all parameters and functions of parameters contain full posterior uncertainty
 
 
@@ -137,11 +176,13 @@ Sensitivity parameter
 - but also *marginal* of the sensitivity parameter
 
 
-# As we get better at doing experiments, they will get more complex
+# As we get better at doing experiments (and causal inference), they will get more complex
 
 - causal mediation and moderation
 - conjoint experiments
+- list experiments
 - compliance
+- DAG-based analysis
 
 
 # Slides:
