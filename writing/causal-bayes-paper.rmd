@@ -3,17 +3,25 @@
 title: |
   Bayesian Causal Inference in Political Science
 author: 
-- Michael G. DeCrescenzo^[Ph.D. Candidate, Political Science, University of Wisconsin--Madison. I have received plenty of great feedback and advice from Matthew Blackwell, Barry Burden, William Christiansen, Andrew Heiss, Devin Judge-Lord, Michael Masterson, Anna Meier, Laura Meinzen-Dick, Evan Morier, Ellie Powell, Daniel Putman, Alex Tahk, Zach Warner, Chagai Weiss, Jessica Weeks, and Dave Weimer for feedback and advice.]
-# soon: Powell, Renshon, Shalef, Weeks
-# send to: Blackwell, Jason, Ryan P, Warner, Ben
+- Michael G. DeCrescenzo^[Ph.D. Candidate, Political Science, University of Wisconsin--Madison. I have received plenty of great feedback and advice from Matthew Blackwell, Barry Burden, William Christiansen, Andrew Heiss, Devin Judge-Lord, Michael Masterson, Anna Meier, Laura Meinzen-Dick, Evan Morier, Ellie Powell, Daniel Putman, Alex Tahk, Zach Warner, Chagai Weiss, Jessica Weeks, and Dave Weimer.]
+# soon: Renshon, Shalef
+# send to: Blackwell, Jason A, Ryan P, Warner, Ben, Chagai, Heiss
+
 date: |
-  Updated `r format(Sys.time(), '%B %d, %Y')`
+  This version: `r format(Sys.time(), '%B %d, %Y')`.^[ View most recent committed version [here](https://github.com/mikedecr/causal-bayes/blob/master/writing/causal-bayes-paper.pdf).]
 abstract: |
- Causal inference and Bayesian analysis are two powerful and attractive methodological approaches for conducting empirical research, but almost never in political science does a single study employ both approaches. This stands in contrast to other fields---such as psychology, epidemiology, and biostatistics---where Bayesian analysis and causal inference methods interact regularly. In this paper I argue that the partition between these methodological schools in political science has no inherent basis in their fundamental goals, which are actually quite compatible: generating the best parameter estimates. In fact, Bayesian analysis provides a number of distinct advantages for improving causal inference designs. <!--Furthermore, Bayesian analysis provides a number of distinct advantages for causal inference designs in political science, including direct parameter inferences, using outside information to make improve parameter estimates, regularization to prevent false positives, and a flexible modeling framework for addressing quirks of treatment assignment, compliance, heterogeneity, and more.--> The methodological partition instead owes itself to informal norms surrounding each school in empirical political science. I discuss these sources of normative tension, discuss go-to practices doing Bayesian inference for the "skeptical causal inference audience," and demonstrate these practices using real examples from recent political science work. The purpose of the paper is *not* to convince all causal inference practitioners to adopt Bayesian estimation. The purpose is to show that Bayesian methods deserve space in the study of causal effects because they improve causal estimates and provide an appealing framework for evaluating causal evidence.
-   
-   \begin{flushleft} 
-     \textbf{Keywords}: experiments, causal inference, Bayesian statistics 
-   \end{flushleft}
+  Causal inference and Bayesian analysis are two powerful and attractive methodological approaches for conducting empirical research, but rarely in political science does a single study employ both approaches. This stands in contrast to other fields---such as psychology, epidemiology, and biostatistics---where Bayesian and causal methods are more commonly applied together. In this paper I argue that the partition between these methodological schools in political science has no inherent basis in their fundamental goals, which are actually quite compatible: generating the best parameter estimates. In fact, Bayesian analysis provides a number of distinct benefits for estimating statistical models for causal inference. The methodological partition instead owes itself to informal norms surrounding each school in empirical political science. I discuss these sources of normative tension, describe go-to practices doing Bayesian inference for a skeptical audience, and demonstrate these practices using real examples from recent political science publications. The purpose of the paper is *not* to convince all causal inference practitioners to adopt Bayesian estimation. The purpose is to show that Bayesian methods deserve space in the study of causal effects because they improve causal estimates and provide an appealing framework for evaluating causal evidence.
+
+  \begin{center}
+    \textbf{
+      \faSmileO\ This paper is aggressively unfinished \faSmileO \\ 
+      \faSmileO\ Please do not cite without permission or circulate recklessly \faSmileO\ 
+    }
+  \end{center}
+
+# \begin{flushleft} 
+#   \textbf{Keywords}: experiments, causal inference, Bayesian statistics 
+# \end{flushleft}
 
 # Declarations: siloing should stop? norms should be changed?
 # Be more specific about Bayesian advantages?
@@ -32,8 +40,8 @@ fontsize: 12pt
 geometry: margin = 1.25in
 indent: true
 linkcolor: black
-urlcolor: cyan
-citecolor: violet
+urlcolor: violet
+citecolor: black
 subparagraph: yes
 output:
   bookdown::pdf_document2: 
@@ -50,6 +58,7 @@ output:
     citation_package: natbib
 ---
 
+
 <!-- First page parameters -->
 \pagenumbering{roman}
 \newpage
@@ -62,12 +71,15 @@ output:
 \hypersetup{pageanchor = true}
 \pagenumbering{arabic}
 \onehalfspacing
+<!-- \doublespacing -->
+<!--  -->
+
 
 ```{r, eval = FALSE, echo = FALSE, include = FALSE}
 rmarkdown::render(here::here("writing", "causal-bayes-paper.Rmd"))
 ```
 
-```{r setup-rmd, include = FALSE, cache = FALSE}
+```{r packages, include = FALSE, cache = FALSE}
 # packages
 library("knitr")
 library("here")
@@ -81,14 +93,13 @@ library("broom")
 library("latex2exp")
 library("tidybayes")
 
-
 # Knitr chunks:
 knitr::opts_chunk$set(
   eval = TRUE, echo = FALSE, include = FALSE, 
   warning = FALSE, message = FALSE,
   cache = TRUE, collapse = TRUE,
   fig.path = "figs/",
-  cache.path = here("writing", "rmd-cache", "cache"),
+  cache.path = here::here("writing", "cache", ""),
   dev = "cairo_pdf", fig.align = "center"
 )
 
@@ -99,7 +110,12 @@ theme_set(
         axis.ticks = element_line(lineend = "square"), 
         axis.ticks.length = unit(0.25, "lines"))
 )
+
+yel <- viridis::magma(1, alpha = 1, begin = 0.9, end = 0.9, direction = 1)
+purp <-  viridis::magma(1, alpha = 1, begin = 0.5, end = 0.5, direction = 1)
 ```
+
+
 
 
 # Introduction
@@ -108,11 +124,11 @@ theme_set(
 
 "Causal empiricism" [@samii:2016:causal-empiricism] and Bayesian analysis are two growing schools of methodological work in applied political science. Despite the value of each, studies that employ both methodological approaches are exceedingly rare. This is despite the fact that Bayesian analysis and causal inference are regular companions in other fields such as psychology, epidemiology, and biostatistics.
   \todo{field cites}
-It is also despite the fact that political scientists in both schools regularly describe the benefit of their school using language and examples that borrow from the other. Introductory discussions of Bayesian inference often use experiments to demonstrate the intuition of Bayesian updating, incorporating prior information from previous studies to condition the information obtained from new data.^[
-  Rubin's -@rubin:1981:eight-schools analysis of the "eight schools experiment" frequently appears as a pedagogical example [e.g. in @gelman:2013:BDA].
+It is also despite the fact that political scientists in both schools regularly describe the benefit of their school using language and examples that borrow from the other. Introductory discussions of Bayesian inference often use experiments to demonstrate the intuition of Bayesian updating, incorporating prior information from previous studies to improve the precision of estimates obtained from new data.^[
+  A common example case in Bayesian pedagogy is an experiment of parallel randomized experiments across eight schools by @rubin:1981:eight-schools [see also @gelman:2013:BDA].
 ]
-Advocates of causal inference in turn use Bayesian language to argue that experiments provide better information for researchers to update their knowledge of causal parameters than observational studies do.^[
-  Indeed, the "illusion of learning from observational research" [@gerber-et-al:2014:obs-learning] is an argument that necessarily relies on a formal Bayesian model, and the namesake result is only obtained through the particular choice of priors in the model.
+Advocates of causal inference in turn use Bayesian language to argue that causal modeling provide stronger information for researchers to update their priors about causal effects, since the researcher has a strong prior that an experimental study contains zero or minimal confounding bias.^[
+  Indeed, the "illusion of learning from observational research" [@gerber-et-al:2014:obs-learning] is an argument that comes from a formal Bayesian model, and the namesake result is only obtained through the particular choice of priors in the model.
 ]
 
 <!-- introduce argument -->
@@ -122,43 +138,79 @@ Why, then, is "Bayesian causal inference" so rare in political science?
 <!-- Keele et al do a Jstor search in RI paper -->
 This paper argues this division in methodological approaches is needless. Bayesian analysis and causal inference are fundamentally compatible and mutually enhancing. I provide both a positive argument for this perspective and a negative argument against the perceived tensions between these two schools. Although each school uses different tactics, both are united in the goal of getting the best parameter estimates possible. Further, the advantages of one school do not necessarily conflict with the advantages of the other. Tensions arise from the informal norms surrounding the applied work in each school rather than the formal structure of the underlying methods. The division between schools is artificial in the least, if not outright counter-productive to the progress of causal empiricism in political science.
 
-After laying out the "positive" and "negative" arguments, I put forth practical advice for doing Bayesian causal inference in "ordinary" empirical contexts, respecting the skeptical norms within causal empiricism while showcasing the theoretical and practical value of Bayesian approaches. Many Bayesian modeling practices are fundamentally conservative---accounting for all sources of parameter uncertainty, regularizing estimates against over-fitting, and down-weighting parameter values that make no sense in the context of the problem---and should appeal to applied causal empiricists. Furthermore, Bayesian inference has philosophical and practical advantages that should appeal to causal empiricists even when treatment effects are not guaranteed to be dramatically affected by the Bayesian model. I then implement these points of advice in two applications: a replication of Hall's [-@hall:2015:extremists] regression discontinuity study of ideologically extreme candidates and a simulated conjoint experiment.
+After laying out the "positive" and "negative" arguments, I put forth practical advice for doing Bayesian causal inference in "ordinary" empirical contexts, respecting the skeptical norms within causal empiricism while showcasing the theoretical and practical value of Bayesian approaches. Many Bayesian modeling practices are fundamentally conservative---accounting for all sources of parameter uncertainty, regularizing estimates against over-fitting, and down-weighting parameter values that make no sense in the context of the problem---and should appeal to causal empiricists. Furthermore, Bayesian inference has philosophical and practical advantages that should appeal to causal empiricists even when treatment effects are not guaranteed to be dramatically affected by the Bayesian model. I then implement these points of advice in two replicated analyses: a regression discontinuity study of ideologically extreme House candidates [@hall:2015:extremists] and an experimental public opinion toward unilateral actions by U.S.\ presidents [@reeves-et-al:2017:unilateral].
 
-My goal is not to convince all causal inference practitioners to use Bayesian methods, nor is it to assert the "superiority" of Bayesian methods. 
-  <!-- We should recognize and celebrate the skepticism that causal inference holds toward *any* method that imposes unjustifiable assumptions.  -->
-Rather, the objective of the paper is to create space for Bayesian causal inference in political science. Bayes and causal inference can make each other better, but we should adjudicate areas of potential disagreements and misunderstanding in order for each camp to benefit from the strengths of the other.
+My goal is not to convince all causal inference practitioners to use Bayesian methods, nor is it to assert the "superiority" of Bayesian methods. Rather, the objective of the paper is to create space for Bayesian methods in political science's push toward rigorous causal approaches. Bayes and causal inference can make each other better even in "ordinary" data analysis scenarios, but these improvements should be demonstrated, and areas of potential disagreement or misunderstanding should be adjudicated.
 
 <!-- Terminology, familiarity, other resources -->
 
-Throughout the paper I refer to "causal inference" as a category of research designs that expose a causal parameter of interest through identification analysis. This includes experiments as well as model-driven designs such as difference-in-differences, instrumental variables, synthetic control, regression discontinuity, and others. I refer to "Bayesian analysis" as statistical models that include models for unobserved parameters (prior distributions) alongside models for observed data (likelihood functions). I avoid coining any term or initialism for Bayesian causal inference because, as I will argue, estimating causal parameters under a Bayesian framework is neither new nor especially remarkable.^[
+Throughout the paper I refer to "causal inference" as a category of research designs that allow the estimation of a parameter with a causal interpretation  justified by an identification analysis. This includes randomized experiments as well as model-driven designs such as difference-in-differences, instrumental variables, synthetic control, regression discontinuity, and others. I refer to "Bayesian analysis" as statistical procedures that include models for unobserved parameters (prior distributions) alongside models for observed data (likelihood functions). For the time being I avoid coining any term or initialism for Bayesian causal inference because, as I argue below, estimating causal parameters Bayesianly is neither new nor especially remarkable.^[
   Explicit Bayesian treatments of potential outcomes modeling can be found as far back as @rubin:1978:bayesian.
 ]
   \todo{literal}
 <!-- if it isn't remarkable then why am I remarking on it? What's the word I actually want to use? -->
-I assume that a reader of this paper has at least some conceptual familiarity with either causal inference or Bayesian analysis, but not necessarily both. I provide some background information and notation to ground the discussion before jumping into the argument, but readers looking for more comprehensive introductions might consult @angrist-pischke:2008:mostly-harmless,  @imbens:2004:nonpar-ATE, @Imbens-Rubin:2015:causal-inf-text, or @Rubin:2008:design-analysis for causal inference, and @gelman:2013:BDA, @jackman:2009:bayesian, or @mcelreath:2015:stats-rethink for Bayesian analysis.
-  \todo{cites} 
-<!-- Imbens/Rubin, Pearl, BDA, Jackman, McElreath? -->
+I assume that a reader of this paper has some conceptual familiarity with either causal inference or Bayesian analysis, but not necessarily both. I provide some background information and notation to ground the discussion as it progresses, but readers looking for comprehensive introductions might consult @angrist-pischke:2008:mostly-harmless,  @imbens:2004:nonpar-ATE, @Imbens-Rubin:2015:causal-inf-text, or @Rubin:2008:design-analysis for causal inference, and @gelman:2013:BDA, @jackman:2009:bayesian, or @mcelreath:2015:stats-rethink for Bayesian analysis.
+  \todo{audience?}
+<!-- a note about who this is for -->
 
 
 
 
-## Causal Modeling with Potential Outcomes
+# Shared Goals, Different Tactics
 
-Causal inference in political science typically starts with a model of "potential outcomes" [@rubin:1974:potential-outcomes]. Suppose individual $i$ is assigned to a treatment status $Z_{i} \in \{0, 1\}$, where $0$ indicates control and $1$ indicates treatment. We measure the outcome $Y_{i}$, and we define $Y_{i}(z)$ as individual $i$'s potential outcomes given $Z_{i} = z$, with $Y_{i}(z = 1)$ being the potential outcome under treatment and $Y_{i}(z = 0)$ being the potential outcome under control. The "unit-level" treatment effect $T_{i}$ is the difference between $i$'s potential outcomes: $T_{i} \equiv Y_{i}(1) - Y_{i}(0)$. $T_{i}$ can never be directly measured, however, because $i$ can only be assigned to one treatment level at a time. The inability to observe multiple potential outcomes for the same observation is commonly called the "fundamental problem of causal inference," and it prevents the researcher from making inferences about the value of $T_{i}$ without further assumptions [@holland:1986:causal-inf]. Researchers refer to "causal inference" as a body of methods for learning about causal effects by specifying formal causal models and the assumptions required to estimate the model's parameters.
+<!-- what it's for, how it works, what it's good for -->
+
+Causal inference and Bayesian analysis can "go together" in political science. This is because both schools are fundamentally interested in the same thing: obtaining the best, most reliable parameter estimates that we can get, given the data. Causal inference and Bayesian analysis employ different tactics to achieve this goal, which I discuss below, but it is valuable to construe their goals this way at the outset.
+
+We might ask whether "obtaining good parameter estimates" is a trivial goal. Don't all statistical methodologies make parameter estimation their primary focus? I think the answer is No. Take null hypothesis significance testing (NHST) as an example. NHST is the prevailing framework for drawing inferences about hypotheses in political science. It operates by measuring the plausibility of the data, given an assumed null hypothesis. Point estimates from statistical models are judged to be "statistically significant" if they were sufficiently unlikely to have occurred by chance ($p < \alpha$) under the null hypothesis. NHST is a protocol for making inferences about hypotheses, but it does not work by making substantive inferences about what parameters actually are. Instead it assumes that the true parameter is a value that was never actually estimated and (if zero) rarely represents a legitimate competing hypothesis, and then it calculates the probability of the data under this separate hypothesis. The ordinary usage of NHST does not guide a researcher's inference about which non-null parameters are better, since the null is rejected in favor of a poorly specified alternative. Scholarly work on nonparametric NHST underscores this point by describing the researcher's quantity of interest as "the certainty of the causal inference"---the $p$-value---rather than the causal parameter itself [@keele-et-al:2012:RI].^[
+  Point estimates and confidence intervals allow narrower inferences about parameters, but this isn't how NHST operates. Furthermore, if confidence intervals are interpreted as ranges of parameter values that are supported by the data, this is already Bayesian inference.
+]
+It does make sense, then, to highlight that causal inference and Bayesian analysis share a fundamental desire to generate the best parameter estimates because they stand in contrast to the dominant inference paradigm in most empirical social science.^[
+  Even if a causal model is interpreted under using NHST, the causal model is its own thing. Furthermore, NHST can be also conducted using Bayesian models, so this discussion of NHST should not be read as a tirade against non-Bayesian analysis!
+]
+
+What are the "best" parameter estimates? Statisticians and methodologists formalize this concept using loss functions, decision rules about bias and error (e.g.\ admissibility), and so on.
+  \todo{admissible}
+<!-- ^[
+  Conveniently, it can be shown in from a decision theory perspective that every *admissible* (sometimes-better and never-worse) decision rule is a Bayes rule [@robert:2007:bayesian-decision].
+] -->
+For applied work, we care about answering our research questions with a sufficient degree of confidence. Causal inference increases our confidence by de-biasing the research design. Bayesian analysis increases our confidence by returning a posterior distribution with value added from prior information. I discuss both of these contributions in turn, and then I briefly discuss a Bayesian potential outcomes model originally described by @rubin:1978:bayesian. 
+
+
+## Causal Modeling: Better Parameters "by Design" {#sec:tactic-CI}
+<!-- Causal inf -->
+
+To achieve the best parameter estimates, causal inference methods develop or implement careful research designs that (i) identify a causal effect as an inherent feature of the design and (ii) the type of causal effect is as narrowly defined as the design can justify. These research designs typically are rooted in a model of the "potential outcomes" for units in the data [@rubin:1974:potential-outcomes], and estimated with a statistical model where the variation in the independent variable identifies the effect in the potential outcomes model.
+
+Causal empiricism formalizes causal claims with a carefully specified causal model instead of an informal, verbal discussion of control variables and potential confounders. Formal causal models in political science typically use potential outcomes notation, a simple example being the case where a unit $i$ is assigned a treatment states $Z_{i} \in \{0, 1\}$, with $0$ indicating control and $1$ indicating treatment. The outcome $Y_{i}(z)$ is unit individual $i$'s potential outcomes given $Z_{i} = z$, with $Y_{i}(z = 1)$ being the potential outcome under treatment and $Y_{i}(z = 0)$ being the potential outcome under control. The unit-level treatment effect $T_{i}$ is the difference between $i$'s potential outcomes: $T_{i} \equiv Y_{i}(1) - Y_{i}(0)$. $T_{i}$ can never be directly measured, however, because $i$ can only be assigned to one treatment level at a time [@holland:1986:causal-inf]. As such, causal models require a set of assumptions to estimate the treatment effect from data.
   \todo{pace?}
 <!-- give it the care you gave the Bayes section -->
 
-Causal inference methods are particularly attentive to the mechanism that assigns units to a treatment status, since the model of the assignment mechanism determines which causal estimands can be identified from the study design [@rubin:1991:assignment]. Most simply, causal effects can be identified if units are assigned to treatment groups by a mechanism that is uncorrelated with their potential outcomes. The most direct way to the treatment and potential outcomes is for units to be randomly assigned into treatment levels. Assuming that units do not interfere with each other's treatments or potential outcomes, the difference between the treatment and control group means is an unbiased estimate of the average treatment effect (ATE) in the sample. In situations where assignment is not perfectly random, treatment uptake is imperfect, and when the causal structure is indirect or multifaceted, researchers have explored the assumptions that enable researchers to identify local treatment effects, conditional treatment effects, intent-to-treat effects, treatment-on-treated effects, direct and indirect effects, and marginal component effects.
+The research designs derived from causal models identify parameters "by design," meaning that a causal interpretation of the estimated parameter flows necessarily from the research design as long as its assumptions are satisfied. These designs are particularly attentive to the mechanism that assigns units to a treatment status, since the model of the assignment mechanism determines which causal estimands can be identified from the study design [@rubin:1991:assignment]. Identification strategies ideally seek treatment assignment mechanisms that are uncorrelated with the units' potential outcomes. The canonical method for obtaining unconfounded treatment status is random assignment into treatment. In situations where assignment is not perfectly uncorrelated, treatment uptake is imperfect, or when the causal structure is indirect or multifaceted, researchers have explored the assumptions required to identify local treatment effects, conditional treatment effects, intent-to-treat effects, treatment-on-treated effects, direct and indirect effects, and marginal component effects.
   \todo{cites}
+<!-- samii for reference? An ARPS article? -->
 
-The advantages to causal modeling are numerous and apparent. While it is commonly known that conventional regression models "merely" estimate the mean of $Y$ conditional on covariates, regression coefficients are routinely discussed with causal language that is not justified by a causal model. This is despite widespread recognition that regression is liable to misspecification and other oversights in translating a causal diagram into a regression specification [see e.g. @keele:2015:causal-inf]. 
-  \todo{samii}
-  <!-- another cite to Samii was here but why? -->
-By identifying specific causal estimands in an explicit causal model, however, the language researchers can use to describe their estimates are restricted by the structure of their research design and the data they have observed for each node in its causal graph. Causal modeling and identification analysis are difficult and effortful additions into the research process, but the crucial payoff is that estimates more closely reflect the causal parameters at interest in the researcher's theoretical model of the world. Supposing that the researcher's quantity of interest is the causal parameter itself,^[
-  This supposition will be crucial for the remainder of the paper.
-]
-estimates from unconfounded research designs provide much more information about causal parameters than estimates from designs with an unknown (but presumably larger) potential for confounding [@gerber-et-al:2014:obs-learning].
-  \todo{Applications?}
+
+<!-- advantage: unconfounded -->
+
+Parameter estimates from causal inference designs are "better" because the researcher has confidence that the estimates truly represent a causal effect. The causal interpretation is justified by an identification analysis [@keele:2015:causal-inf; @matzkin:2007:identification] that explicates the minimal set of assumptions required to form this causal interpretation. This is in contrast to regression models that "merely" estimate a conditional mean of $Y$ and are are routinely discussed with vague causal language that is difficult to justify on a "selection-on-observables" identifying assumption. As a result, causal parameters avoid both internal and external validity problems that plague observational research including model misspecification and generalizing beyond common support. When the researcher is confident that bias in a study is small, the researcher is able to update their priors about the causal effect more decisively than in an observational setting where bias could be more pervasive [@gerber-et-al:2014:obs-learning].
+
+<!-- 
+Other notes
+
+- misspecification: "This is despite widespread recognition that regression is liable to misspecification and other oversights in translating a causal diagram into a regression specification [see e.g. @keele:2015:causal-inf]."
+- specificity: "By identifying specific causal estimands in an explicit causal model, however, the language researchers can use to describe their estimates are restricted by the structure of their research design and the data they have observed for each node in its causal graph." (Samii & cites to LATE things)
+- realism, validity: 
+  - "Causal modeling and identification analysis are difficult and effortful additions into the research process, but the crucial payoff is that estimates more closely reflect the causal parameters at interest in the researcher's theoretical model of the world."
+  - pseudo-facts (internal validity) and pseudo-generality (lack of common support)
+  - "a single, paper- length empirical analysis is likely to yield nonspecific causal facts that generalize without strong assumptions"
+  - "builds up to general knowledge through incremental accretion of credible findings across a diversity of settings"
+  - maybe, against theory tension: "The point is that there is no inherent tension between causal empiricism and theoretical modeling."
+- updating: "[@gerber-et-al:2014:obs-learning]"
+ -->
+
+
+
 <!-- 
 What happens when you do causal inference?
 
@@ -175,368 +227,143 @@ Find some nice examples where the causal model found something that greatly depa
 
 
 
-## Bayesian Inference
 
-<!-- Intros to Bayes commonly use vocabulary that make it "feel" incompatible with causal inference methods. -->
 
-Bayesian inference is often described using language that obscures its philosophical and practical appeal, making it feel incompatible with the principles and norms of causal inference methods. In this short overview of Bayesian inference, I hope to clarify its more difficult intuitions by using terminology that will ease its connection to causal inference.
-  \todo{notation}
-<!-- mea culpa about two notational regimes?
 
-- forewarning that the Bayesian Rubin approach will hew more closely to the Bayesian notation?
 
- -->
-First, using language from @gelman:2013:BDA[p. 1], Bayesian inference is fitting a statistical model and analyzing the probability distribution of its unknown parameters. That is, which parameters are *likely* or *unlikely*, having seen the data? In a causal inference application, these parameters are  treatment effects.
 
-Mechanically, Bayesian models specify a joint probability distribution over all variables in the model, where a "variable" could be observed data (represented as $y$) or unobserved parameters (represented as $\theta$). Specifying a full probability model for data and parameters "merely" applies the same intuition to parameters as is routinely applied to data: we can't perfectly predict every instantiation of the process that produces data (or parameters), but we use a probability distribution to represent our estimates of that process. This joint distribution begins with a data model that is a function of model parameters, $p(y \mid \theta)$, and a prior distribution over possible parameter values, $p(\theta)$. This joint distribution can be represented as 
+
+
+## Bayesian Analysis: Better Parameters with Priors and Posteriors {#sec:tactic-bayes}
+
+To achieve the best parameter estimates, Bayesian methods use the posterior distribution. The posterior distribution conveys which parameter values are likely, and which are unlikely, having seen the data. The posterior distribution is unique to Bayesian analysis and has distinctive philosophical and practical benefits. Philosophically, the posterior allows researchers to make direct inferences about which parameters are consistent with the data and with what probability. This can only be done indirectly in non-Bayesian inference; confidence intervals cover the true parameter only in "95% of infinitely repeated samples," whereas Bayesian intervals (called "credible" or "compatibility" intervals) have a clear meaning even in one-off samples that are never repeated. The posterior distribution reflects uncertainty over all parameters both marginally and conditionally, with no need for post-hoc standard error corrections or approximations that collapse uncertainty for nuisance parameters. The posterior can also be improved with the specification of the prior distribution, which is discussed more below. Practically, Bayesian models can naturally handle multilevel data structures, missing data, and mixture processes, and they make it easy for researchers to calculate and visualize model estimates with posterior samples.
+
+Mechanically, Bayesian models specify a joint probability distribution over all variables in the model, where a "variable" could be observed data (represented as $y$) or unobserved parameters (represented as $\theta$). Specifying a full probability model for data and parameters "merely" applies the same intuition to parameters as is routinely applied to data: we can't perfectly predict every instantiation of the process that produces data (or parameters), but we use a probability distribution to represent our estimates of that process. This joint distribution begins with a data model that is a function of model parameters, $p(y \mid \theta)$, and a prior distribution over possible parameter values, $p(\theta)$. This joint distribution can be represented as
 \begin{align}
   p(y, \theta) &= p(y \mid \theta)p(\theta).
 \end{align}
 <!-- prior predictive distribution? 
   p(y) = \int􏰧 p(y, \theta) d\theta = 􏰧 p(\theta)p(y\mid \theta) d\theta
 -->
-The prior distribution $p(\theta)$ inevitably contains parameters that would are less supported by the data as more data are collected. Researchers learn which parameters are consistent with the data by conditioning the parameters on the data using Bayes' Theorem.
+The prior distribution $p(\theta)$ inevitably contains parameters that would be unsupported by the data as more data are collected. Researchers learn which parameters are consistent with the data by conditioning the joint distribution on the data using Bayes' Theorem.
 \begin{align}
   p(\theta \mid y) &= \frac{p(y \mid \theta)p(\theta)}{p(y)}
 \end{align}
-Conditioning on the data allows the researcher to "update" the distribution of parameters. This updated distribution, the posterior distribution, is the represents the parameter values that are most compatible with both the initial model and the data. The exact shape of the posterior is determined by the specificity of the prior and the strength of the signal from the data. When the prior is flat or the data contain a precise signal about likely and unlikely parameters, the posterior more heavily reflects the data, $p(y \mid \theta)$. In turn, when the researcher observes enough data, the prior approaches irrelevance.^[
+Conditioning on the data allows the researcher to "update" the distribution of parameters. This updated distribution, the posterior distribution, is the represents the parameter values that are most compatible with both the initial model and the data. The exact shape of the posterior is determined by the specificity of the prior and the strength of the signal from the data. When the prior is flat or the data contain a precise signal about likely and unlikely parameters, the posterior more heavily reflects the data, $p(y \mid \theta)$. When the researcher observes enough data, the prior approaches irrelevance.^[
   As long as the prior does not assign zero probability to important regions of parameter space.
 ]
 Conversely, when the prior distribution is more precise or the data send a weak signal, the posterior distribution retains more of the prior. Crucially, the intuition of Bayesian updating is agnostic to whether the original model has a causal interpretation; if any model has parameters that can be conditioned on data, then posterior parameter inference is possible.
 
-The posterior distribution is the key philosophical payoff of Bayesian inference. It allows the researcher to make inferences about parameter values by evaluating their probability distribution directly. This stands in contrast to non-Bayesian methods where inference is performed indirectly by assuming a fixed parameter value (typically at "null" values that do not represent competing scientific models), calculating a point estimate of the unknown parameter, and judging whether point estimate is "sufficiently unlikely" to have occurred given the assumed parameter value. A harsh interpretation is that null hypothesis significance testing (NHST) says "these data are unlikely, given a model that I don't believe," while Bayesian inference says, "these parameters are likely, given data I have actually observed."
+All of the philosophically appealing intuitions of the posterior hold even when the prior distribution for parameters $p(\theta)$ is vague or flat. Posterior inference can be improved even further by specifying informative priors about the plausible parameter values in the model. Understandably, the issues surrounding priors is where Bayesian analysis is most commonly misunderstood, so I hope to clear up some of these misunderstandings before directly confronting the intersection of Bayes with causal inference.
 
-<!-- Worry spots:
+First, Bayesian analysis considers a joint probability distribution of parameters and data. This means that Bayesian statistics regards parameters as "random" variables. This terminology can be confusing, especially from a non-Bayesian perspective where the true parameter is thought to be an unknown but "fixed" value. This idea of a fixed parameter works in Bayesian analysis too; the difference is that our uncertainty about its exact value is represented using a probability distribution. The parameter is not random in the sense that it is fluctuating between ever-changing quantum states. Rather, it is random in the sense that it may be an instantiation of some underlying process that we cannot describe exactly. This is no different from the way we describe data as draws from probability distributions. We can't exactly predict an individual data point, but we have good justification to assume that the accumulation of forces that determine its exact value resemble a probability distribution. Indeed, likelihood functions are exactly like priors for data; the only difference is that "data" is the word we use for a piece of the model that we observe, while "parameter" is a word we use for a piece of the model that is unobserved.^[
+  Richard McElreath, "Understanding Bayesian statistics without frequentist language." Talk delivered at Bayes&#64;Lund2017. Accessed via <https://www.youtube.com/watch?v=yakg94HyWdE>
+]
 
-- the "subjectivity" of the prior 
-- random variable intuition
 
+Non-Bayesians are often skeptical of using priors to "stack the deck" in favor of a pre-determined conclusion rather than letting the data speak. Luckily, priors are not employed in such a way. Most of the time priors are used to downweight implausible parameters (e.g.\ coefficients or variance terms that exceed the range of the outcome variable) rather than upweight the researcher's preferred hypothesis. Nearly all modeling problems have natural constraints on the possible parameters values. These natural constraints can be incorporated into the model with "weakly informative priors," which I discuss more in Section&nbsp;\@ref(sec:advice) [see also @gelman2006varianceprior]. Flat priors, by contrast, have the primary effect of *upweighting* highly implausible parameter values. Flat priors regard a coefficient of 10 million as equally likely to a coefficient of 1, but a researcher would throw any model away that returned an estimate of 10 million for most outcome scales. By this logic, it is difficult to imagine too many situations where we can't do better than a flat prior.
+  \todo{puffery}
+<!-- Intros to Bayes commonly use vocabulary that make it "feel" incompatible with causal inference methods. -->
+  \todo{notation}
+<!-- mea culpa about two notational regimes
+- forewarning that the Bayesian Rubin approach will hew more closely to the Bayesian notation?
+?
 -->
-
-
-  \todo{clarify?}
-<!-- Overture to some clarifications? Posterior probability vs NHST. Random variable, likelihood and prior (it's likelihoods that are special cases of priors, not priors that are special or ad hoc). Information vs. belief -->
-For parameters to have probability distributions, Bayesian statistics regards them as "random" variables. This terminology can be confusing, especially from a non-Bayesian perspective where the true parameter value is "fixed" but unknown. A more intuitive way to describe Bayesian parameters is to say that we don't (or can't) know the precise value of the true parameter---and indeed there could be one "true" value---but the information we have about the true value is characterized by a probability distribution. The parameter isn't random in the sense that it is fluctuating between ever-changing quantum states. Rather, it is random in the sense that it is an instantiation of the underlying process that produced the parameter. Because the precise value of the parameter is unknowable with a finite amount of data, as researchers we strive to obtain as specific information about that process as we can by revising our information about the parameter's probability distribution.
-
-
 <!-- Specifying a probability distribution for every variable in the model "merely" applies the same distributional intuition to parameters as is commonly applied to data: we can't predict the exact value of the data (or parameter) given our information about it, but if we could observe it exactly, it more likely comes from an area of its generating distribution that has higher density. [@mcelreath:2015:stats-rethink]. -->
   \todo{elab?}
  <!-- I elaborate on this more below(?). -->
-  \todo{Betan?}
+  \todo{Mike B?}
 <!-- This makes philosophical sense in the Bayesian framework because we want to learn as much as we can about the variables in our model, but random (or "independent") processes interfere with our ability to obtain perfect knowledge. As such, the distribution represents our best guess about the processes at work in the model. We could describe likelihood functions as "priors" for observed data; we learn which data are more likely by conditioning on parameters. Parameters have a similar intuition, where we condition on data to learn which parameters are more likely. -->
 
 <!-- Imagine you didn't know the value of $X$ before you observe it, but you know that it comes from a N(0,1) process. Given your incomplete information about $X$, an appropriate way to study functions of $X$ would be to study the distribution of values that would arise from $f(X)$. -->
 
 
+<!-- Bayesian modeling 
 
-<!-- 
-why probability distribution
-why updating
-why/how prior
-
-Data are a function of parameters, and parameters could be in this region a priori. Model fitting is done by conditioning the parameters on the data, resulting in a distribution of parameters that are consistent with the data.
-
-Likelihood says that data are distributed according to parameters, and priors lay out which parameter values are more or less plausible a priori. By conditioning on the observed data, we learn which parameter values are consistent with the data, and the density of the resulting posterior distribution tells us which parameters are most consistent.
-
-Hesitation about "stacking the deck" rather than letting the data speak. First, non-Bayesian (and unregularized) models can be regarded as special cases of Bayesian models with flat priors. Second, it is (almost?) always the case that there is some reasonable prior information that augments the model with flat priors. It is hard to imagine a situation where we can't "do better" than flat priors. We elaborate and demonstrate this below.
-
- -->
-
-
-# Shared Goals, Different Tactics
-
-Causal inference and Bayesian analysis can "go together" in political science. This is because both schools are fundamentally interested in the same thing: obtaining the best, most reliable parameter estimates that we can get, given the data that we have. Causal inference and Bayesian analysis employ different tactics to achieve this goal, which I discuss below, but it is important to dwell on this initial point.
-
-It is worth asking up front whether "obtaining good parameter estimates" is in fact a trivial goal. Don't all statistical methodologies share that goal? The answer is No. I can elaborate using the prevailing framework for statistical inference in political science: null hypothesis significance testing.
-  \todo{ref1?}
-<!-- is this first reference for NHST and RI -->
-
-Null hypothesis significance testing (NHST) is a method for testing the plausibility of an assumed null hypothesis.
-  \todo{the pt}
-<!-- it's really popular and it doesn't care what the parameter actually is -->
-It works by inferring whether point estimates are "statistically significant"---that they were sufficiently unlikely to have occurred by chance ($p < \alpha$) if the null hypothesis were true. NHST is an approach for making inferences about hypotheses, but it does not work by making substantive inferences about what parameters actually are. Instead, it works by assuming that the true parameter is something other than what was actually estimated, and then judging that the *data* are unlikely under that assumption. NHST in its ordinary usage does not tell a researcher which non-null parameters are better---the null hypothesis is rejected in favor of an arbitrary alternative hypothesis. Scholarly work on nonparametric hypothesis testing in political science underscores this point in the way it describes the researcher's quantity of interest as "the certainty of the causal inference"---the $p$-value---rather than the causal parameter itself [@keele-et-al:2012:RI].^[
-  While it's true that point estimates and confidence intervals allow narrower inferences about parameters, this isn't the same as the NHST protocol. Furthermore, if the confidence interval is interpreted as the range of plausible parameter values after having observed the data, then using confidence intervals for inference can be but unacknowledged move toward Bayesian inference.
-]
-<!-- is this any good/worth it? -->
-It does make sense, then, to describe causal inference and Bayesian analysis as ultimately interested in good parameter estimates because they stand in contrast to the dominant inference paradigm in most empirical social science.^[
-  The fact that most causal models are estimated using an NHST framework is separate from the causal model itself.
-]
-
-<!-- Causal inf -->
-
-To achieve the best parameter estimates, causal inference focuses on the research design. 
-
-- problems with observational research in recent decades:
-  - interval validity ("pseudo-facts", specification, confounding)
-  - external validity (positivity/common support)
-- Specificity of the causal claim (Samii)
-  - identification analysis: can the effect be known with infinite data? under what assumptions?
-  - variations on the ATE
-- The *design* permits the identification of the causal claim
-  - identification analysis: 
-  - identification strategy: this research design lets us estimate the parameter of interest
-- Causal inf versus theory
-  - "The point is that there is no inherent tension between causal empiricism and theoretical modeling."
-  - "a single, paper- length empirical analysis is likely to yield nonspecific causal facts that generalize without strong assumptions"
-  - "builds up to general knowledge through incremental accretion of credible findings across a diversity of settings"
-
-
-<!-- --- -->
-
-Causal empiricism explicitly or implicitly incorporates an *identification analysis*, which states the minimal set of assumptions required to learn the value of a causal parameter if there were an infinite amount of data [@keele:2015:causal-inf; @matzkin:2007:identification]. Once identification is established, a researcher designs and implements a research that contains an identification *strategy*---some variation that allows the researcher to identify the causal parameter under the assumptions laid out by the identification analysis. 
-
-To be more specific, 
-
-
-
-- Identification analysis: what is the minimal set of assumptions required to identify a causal parameter
-- Identification strategy: what is a research design that permits estimation of the parameter (or some variation of it)
-
-In most observational research, the researcher does not have much confidence that the "selection on observables" assumption is satisfied in order to interpret a regression coefficient as a causal effect. Rather than trying to control for every potential confounder, causal models search for variation in the independent variable that is unrelated to the potential outcomes for the dependent variable. If the mechanism that assigns treatment permits this independence assumption, then the effect of the independent variable is unconfounded by other factors that affect potential outcomes.^[
-  The technical result is that under independence, the expectation of the potential outcome is equal to the expectation of the observed sample outcomes conditional on treatment assignment [@keele:2015:causal-inf].
-]
-<!-- who cares? -->
-Causal modeling explores the minimal set of assumptions required to build this causal inference by conducting an identification analysis. Identification analysis explores the minimal set of assumptions required to expose the causal parameter of interest, rather than nonchalantly claiming that the regression coefficient is a "good enough" estimator. 
-
-- How do we obtain the causal parameter, starting with the potential outcomes model
-- What minimal set of assumptions to we need to estimate the causal parameter
-- The design is what sets CM estimates apart from observational estimates
-
-<!-- - Identification analysis
-- Model of the assignment mechanism?
-- Ignorable? Conditionally independent? Are they the same?
- -->
-
-
-<!-- Bayesian modeling -->
-
-To achieve the best parameter estimates, Bayesian methods use the posterior distribution. The posterior distribution allows researchers to make direct inferences about the parameters that are consistent with the data. 
-
-- full uncertainty
-
-Posterior inferences can be improved by specifying more informative prior distributions for the model parameters. 
-
-- high dimensional problems with small data
-- we always know more about the problem than a model with flat priors
-
-
-
-
-
-
-
-To answer this question, we should ask ourselves which elements of each method are in tension with each other and which are in harmony. I argue that 
-
-Use Gerber, Green, and Kaplan to justify the parameter intuition
-
-- more specific priors lead to more learning! 
-
-- "First, under what conditions and to what extent should we update our prior beliefs based on experimental and observational findings?" (252)
-- First statement of their project is "Suppose you seek to estimate the causal parameter M" (253)
-- "In advance of gathering the data, you hold prior beliefs about the possible values of M." (253)
-- *a strong interpretation of the GGK project is that learning about parameters is only made possible by specifying a prior and obtaining a posterior*
-- A key citation in justifying experimental research relies on assumptions that we are learning about the posterior distribution of parameters
-  - *it's worth pointing out for the record that the assumptions required to make observational research are ludicrous, but whatever*
-
-
-
-But???
-
-- in the case where you have no prior about true mean or bias, the posterior is equal to an experimental estimate (you only learn from the experiment because you're infinite variance over the bias?)
-- "When researchers lack prior information about the biases associated with observational research, they will The illusion of learning from observation research 253 assign observational findings zero weight and will never allocate future resources to it."
-  - *this is a fucking abuse of Bayesian intuition*
-
-
-Forceful argument
-
-- The person who made these models often uses the Bayesian version because it makes more inferential sense (Rubin)
-- Screeds against observational work in political science require Bayesian interpretation in order to for the idea of "learning from experiments" to be theoretically tractable, so you're fucking welcome
-
-
-
-
-## Potential Outcomes with Bayesian Language
-
-This section demonstrates the mechanics of causal modeling under a Bayesian conceptual framework. It owes the key intuition to Rubin (1978) with some abuse of notation.
-
-A key feature of Bayesian analysis is that unknown quantities are represented with probability distributions; we lack exact knowledge about their values, and the probability distribution represents our state of uncertainty. Functions of unknown variables, in turn, reflect uncertainty about the unknown parameters that compose it. This is relevant to causal inference because it changes our interpretation of the potential outcomes. An unobserved potential outcome $\tilde{y}_{i}$ in a Bayesian framework is represented by a *distribution* of unknown potential outcomes that reflects the posterior distribution of unknown parameters that create potential outcomes. We therefore regard the treatment effect $\tau_{i}$ by averaging over all unknown potential outcomes.
-
-Suppose that $p(\tilde{y})$ is the *prior* predictive distribution of unobserved potential outcomes. We conduct causal inference by determining the posterior distribution of unobserved potential outcomes, that is by conditioning this distribution on the information conveyed by observed data $y$. This conditioning implies that we update model parameters $\theta$ in the process.
-\begin{align}
-  p(\tilde{y} \mid y) &= \int p(\tilde{y}, \theta \mid y) d\theta.
-\end{align}
-Given our observed data $y$, the posterior predictive distribution of $\tilde{y}$ is the joint distribution of $\tilde{y}$ and the posterior $\theta$, averaging across our posterior uncertainty about $\theta$.
-
-\todo[inline]{is this integral gibberish?}
-
-<!-- our knowledge about their exact realizations is unknown and bounded by the finite information that we have. Rather than treating $Y_{i}(z) - Y_{i}(z')$ as unknown but *fixed*, we regard the unobserved potential outcome $Y_{i}(z')$ as a *distribution* of potential outcomes whose density reflects the researcher's uncertainty about the parameters in the data generating process. -->
-
-<!-- 
-
-Why is this appealing? 
-
-  - It explicitly incorporates the idea of uncertainty into the potential outcomes model. 
-  - We never know the treatment effect. Not just because the potential outcomes are unobservable---that part is dealt with by the causal model---but because we never know the parameters. Thus our inferences about the treatment effect *directly* reflect our uncertainty about parameters.
-  - It provides a theoretically coherent method for simulating and evaluating the unobserved potential outcomes, given the posterior distribution of parameters. We don't know the exact potential outcome, but the Bayesian setup directly characterizes its probability distribution after conditioning the model on data.
+- Puff self up
+- Key benefits: not the prior but the posterior distribution
+  - Priors are in service on the posterior
+- Define and explain
+  - fitting and posterior inference
+  - joint distribution, updated
+- about priors
+  - researcher knows what parameters shouldn't be found, so can guide the model and rule out nonsense
+  - we always know more than the model does
+  - high dimension problems with small data
+  - synthesize knowledge across conditions or studies
+- Don't make negative arguments about clash w/ CI
+- But fine to clear up things about Bayes unto itself
 
 -->
 
 
-To fill out the modeling intuition, consider an experiment where individuals are randomly assigned to values of $z \in \{0, 1\}$. The difference of means is commonly estimated using a regression form...
+
+
+## Potential Outcomes as Posterior Distributions
+
+Causal inference improves parameter estimation by de-biasing the research design, and Bayesian inference improves parameter estimation by incorporating prior information to obtain a posterior distribution of parameter values. How would we combine the two perspectives? This section discusses a Bayesian potential outcomes model originally laid out by @rubin:1978:bayesian but simplified for this paper. Next is a generic, reduced-form example of an experiment estimated using Bayesian priors.
+
+A key feature of Bayesian analysis is that unknown quantities in our model are represented with probability distributions that represent our uncertainty. Functions of unknown variables, in turn, reflect uncertainty about variables that compose it. This is relevant to causal inference because it changes our interpretation of the unobserved potential outcomes. An unobserved potential outcome $\tilde{y}_{i}$ in a Bayesian framework is represented by a distribution of unknown potential outcomes that reflects posterior uncertainty about model parameters. We obtain the posterior distribution of the unobserved outcome by conditioning on the data. Its marginal posterior distribution is its joint distribution with the updated model parameters, integrating over the parameter values.
 \begin{align}
-  y_{i} &= \mu_{0} + \tau\mathit{z}_{i} + \varepsilon_{i},
+  p(\tilde{y}_{i} \mid y) &= \int p(\tilde{y}_{i}, \theta \mid y) d\theta
 \end{align}
-where $\mu_{0}$ is the control group mean, $\tau$ is the treatment effect of moving from $z = 0$ to $z = 1$, and $\varepsilon_{i}$ is response-level error. For Bayesian estimation, we would specify the full probability model for all observed data and unobserved parameters. First, the response data are given a model implied by the parametric assumption of $\varepsilon_{i}$.
+This means that we would construe the unit-level treatment effect $T_{i} = y_{i} - \tilde{y}_{i}$ as an expectation that averages over the posterior uncertainty in the model parameters.
+  \todo{int}
+  <!-- is this integral gibberish? -->
 \begin{align}
-  y_{i} &\sim \mathrm{Normal}\left(\mu_{0} + \tau\mathit{z}_{i}, \sigma_{z[i]} \right)
+  p\left(T_{i} \mid y \right) &= \int p\left(y_{i} - \tilde{y}_{i} \mid y\right)d\theta
 \end{align}
-This example assumes unequal variance across levels of $z$. We then include priors for the model parameters.
+In English, the posterior distribution of the treatment effect is the distribution of differences between the observed and (posterior) unobserved potential outcomes, marginalizing over the model parameters.
+
+Why is the Bayesian potential outcomes setup appealing? Because parameters are given probability distributions, our epistemic uncertainty about the causal effect is an explicit feature of the potential outcomes model rather than a byproduct of estimation under sampling error. By treating unobserved potential outcomes as conditional on the observed data, the Bayesian model effectively is a missing data model for potential outcomes [@rubin:1978:bayesian]. Unobserved potential outcomes can be simulated directly from the posterior distribution and evaluated during posterior predictive checking [an important part of the Bayesian workflow, see @gabry:2019:visualization]. This provides natural scaffolding to extend causal models with more complex design features such as missing data, non-compliance, and more [e.g.\ @horiuchi2007designing].
+
+<!-- [which could be sampling-based or "design-based", see @abadie-et-al:2017-design-uncertainty] -->
+
+Zooming out from the potential outcomes model, we can see what an experiment would look like if it were analyzed from a Bayesian perspective. Consider an example where individuals are randomly assigned to values of $z \in \{0, 1\}$. The difference of means is commonly estimated using a regression form...
 \begin{align}
-  \mu_{0} &\sim p(\mu_{0}) \\
-  \tau &\sim p(\tau) \\
-  \sigma_{z} &\sim p(\sigma_{z})
+  y_{i} &= \alpha + \beta\mathit{z}_{i} + \varepsilon_{i},
 \end{align}
-The process of Bayesian estimation then conditions the parameters on the data to obtain updated distributions for $\mu_{0}$, $\tau$, and $\sigma$. If the priors are (improper) flat priors, then the posterior distribution for the parameters will be proportional to the shape of the likelihood.
-
-One practical consideration for Bayesian estimation is the parametric form of the regression. By estimating a treatment effect as the coefficient on a treatment indicator, it is very difficult to place equal prior uncertainty on both treatment group means. For this reason, it is more straightforward to write the conditional mean of $y_{i}$ explicitly as the mean in each treatment group,
-\begin{align}
-  y_{i} &\sim \mathrm{Normal}\left(\mu_{z[i]}, \sigma \right).
-\end{align}
-Under this setup, the average treatment effect is $\tau = \mu_{z = 1} - \mu_{z = 0}$. From that starting point, it is straightforward to place equal priors on both treatment groups without affecting the behavior of the models for $y_{i}$ and $\sigma_{j}$.
-\begin{align}
-  \mu_z &\sim p(\bm{\mu}) 
-\end{align}
-
-
-
-## Examples in Political Science
-
-
-
-# Misunderstandings, Norms, and Disagreements
-
-Skepticism in different forms
-
-- confounding
-- model assumptions?
-- "impossible" parameters
-
-
-Bayes:
-
-- measurement
-- sticking to "hard problems"
-- the demand for "value added" means that the benefits for "normal science" are swept aside (wrongly)
-
-
-# Practical Bayes for Skeptical Causal Inference
-
-
-Another difficult concept in Bayesian inference is the role of *belief*. Priors are often described as a researcher's "beliefs" about the parameter before collecting data. While priors may be correlated with researchers' beliefs, equating the two is misleading. Priors are better thought of as explicit assumptions about plausible and implausible parameter values. They are mostly a way to guide estimated parameters to regions of parameter space that are consistent with plausible data that are possible to observe, depending on the parameterization of the model and the scale of the variables.^[
-  A common example is logistic regression coefficients to predict a binary outcome. For a control group with a predicted probability of 50%, a treatment effect of 3.0 on the log odds scale is an effect of more than 40 percentage points. For most social science studies, a prior in a logistic regression can safely assume that coefficients of $3$ or larger are nearly impossible.
-] \todo{in the norms section?}
-
-
-**start with as little prior information as possible and work up??**
-
-- what's the matter with this
-- Is this just PPCs
-
-
-## Philosophical Benefits even with Flat Priors
-<!-- or: Flat Priors Are Still Priors -->
-<!-- or: Bayes in "ordinary" empirical settings -->
-
-What are the advantages of Bayesian view even if you kept priors flat and unrestricted?
-
-There are distinct philosophical and practical benefits even with flat priors
-
-- posterior inference
-- proliferated and joint uncertainty
-- computational convenience (in the sense of numerical approximation as an end-around analytic derivation) for functions of parameters, model evaluation
-- multiple comparisons is second-nature
-
-## Weak prior information and predictive checks
-
-Logistic regression presents a great example. Logit coefficients are typically thought to be normally distributed on the logit scale. 
-
-```{r, logit-treatment}
-n_logit_sims <- 100000
-
-# flat_logit <- 
-#   tibble(flat = runif(n_logit_sims, -20, 20),
-#          prob = plogis(flat)) %>%
-#   gather(key = scale, value = value, flat, prob) %>%
-#   print()
-
-
-logit_example <- 
-  tibble(`Normal(0, 10)` = rnorm(n_logit_sims, 0, 10),
-         `Normal(0, 1.75)` = rnorm(n_logit_sims, 0, 1.75),
-         `Normal(0, 1)` = rnorm(n_logit_sims, 0, 1),
-         `Normal(0, 0.5)` = rnorm(n_logit_sims, 0, 0.5)) %>%
-  gather(key = prior, value = sample, contains("Normal")) %>%
-  mutate(prob = plogis(sample), 
-         effect = prob - 0.5,
-         prior = fct_relevel(prior, "Normal(0, 10)", "Normal(0, 1.75)", "Normal(0, 1)")) %>%
-  print()
-```
-
-```{r plot-logit-treatment, include = TRUE, fig.width = 6, fig.height = 5, out.width = "80%", fig.cap = "Priors simulations of logit coefficients on the probability scale"}
-ggplot(data = logit_example, aes(x = prob)) +
-  facet_wrap(~ prior, nrow = 2) +
-  geom_histogram(binwidth = 0.025, boundary = TRUE,
-                 color = "black", fill = "gray80") +
-  labs(x = "Effect on predicted probability", y = "Prior draws") +
-  theme(axis.text.y = element_blank(),
-        axis.ticks.y = element_blank())
-
-# ggsave(here("writing", 'figs', "logit-test.pdf"), height = 4, width = 5)
-
-# ggplot(flat_logit, aes(x = value)) +
-#   geom_histogram() +
-#   facet_wrap(~ scale, scales = "free")
-
-```
-
-
-
-## Regularization
-
-- Informed priors *downweight* the probability of extreme effects and *upweight* the probability of small effects
-- Flat priors *upweight* extreme effects
-
-Fixed effects and OLS models are special cases of multilevel models, where subgroup information is either ignored completely ($\sigma^{\mathrm{group}} = 0$) or estimated without any memory of other groups ($\sigma^{\mathrm{group}} = \infty$).
-
-
-# Demonstration: Regression Discontinuity using Weakly Informative Priors
-
-
-Researchers often encounter modeling scenarios where the problem presents natural constraints on which parameter values are plausible or even possible.
-  \todo{re-WIPs}
-<!-- worth reprising what a WIP is? -->
-
-  \todo{models}
-<!-- This is a good situation because it's a model-driven design.
-     Which presents more opportunities for researchers to improve the estimation using priors.
- -->
-
-  \todo{Hall}
-<!-- What's happening in the Hall paper?
-intuition, DV, specifications -->
-
-I focus on Hall's "local linear" specification predicting the probability of winning the general election. Hall estimates this binary outcome using a linear probability model, where $y_{dpt}$ equals $1$ if the candidate in district $d$ in party $p$ in election $t$ wins the general election. 
-\begin{align}
-  \begin{split}
-    y_{dpt} &= \beta_{0} + \beta_{1}\text{\emph{Extremist Primary Win}}_{dpt} 
-               + \beta_{2} \text{\emph{Extremist Primary Margin}}_{dpt} \\
-            &\quad + \beta_{3}\left(\text{\emph{Extremist Win}}_{dpt} \times
-            \text{\emph{Extremist Margin}}_{dpt} \right) + \varepsilon_{dpt}
-  \end{split}
-\end{align}
-In this specification, the treatment effect at the discontinuity is estimated by $\beta_{1}$, while $\beta_{2}$ and $\beta_{3}$ capture the effect of the running variable on either side of the discontinuity.^[
-  Hall estimates both conventional and heteroskedasticity-robust standard errors in his paper and reports whichever is largest. For this model, it makes hardly any difference which standard error is used, so for simplicity I make no heteroskedasticity adjustments.
+where $\alpha$ is the control group mean, $\beta$ is the difference in the means of each group,^[
+  Sometimes the difference in the means of the treatment and control group  is not exactly the same as the mean of the unit-level treatment effects. This can depend on the link function but also whether a researcher wishes to distinguish sampling-based or "design-based" uncertainty [@abadie-et-al:2017-design-uncertainty].
 ]
+and $\varepsilon_{i}$ is response-level error. For Bayesian estimation, we would specify the full probability model for all observed data and unobserved parameters. First, the response data are given a probability model implied by the parametric assumption of $\varepsilon_{i}$. (This is not Bayesian.)
+\begin{align}
+  y_{i} &\sim \mathrm{Normal}\left(\alpha + \beta\mathit{z}_{i}, \sigma_{z[i]} \right)
+\end{align}
+This example assumes unequal variance across levels of $z$. We would then include priors for the model parameters, which I will black box with generic $p(\cdot)$ statements..
+\begin{align}
+  \alpha &\sim p(\cdot) &
+  \beta &\sim p(\cdot) &
+  \sigma_{z} &\sim p(\cdot)
+\end{align}
+A deeper discussion about priors can be found in Section&nbsp;\@ref(sec:advice). To fit the model, we condition the parameters on the data and achieve posterior distributions for $\alpha$, $\beta$, and $\sigma$. If the priors are flat, then the posterior distribution for the parameters will be proportional to the likelihood. Otherwise, the posterior distribution will retain some contribution from the prior. All the parameters have the same meaning as in a non-Bayesian model; $\beta$ still represents the causal parameter, but we have estimated it using a prior. It is ultimately a modest intervention on the way experiments are ordinarily interpreted.
+
+Digging a little deeper, one practical consideration for Bayesian estimation is the parametric form of the regression, since parameterization affects the intuition of the priors.^[
+  This is also not Bayesian, since likelihood-based models have implicitly flat priors that have different implications on different transformed scales. Flat priors on the log-odds scale will behave differently from flat priors in a linear probability model even if the data are the same. Non-Bayesian models don't avoid the issue of priors; they only ignore it.
+]
+By estimating a treatment effect with a dummy variable, it is very difficult to place a prior on a difference in means that leads to equal priors for both group means. For this reason, it is more straightforward to write the conditional mean of $y_{i}$ explicitly as the mean in each treatment group, $\mu_{z}$:
+\begin{align}
+  y_{i} &\sim \mathrm{Normal}\left(\mu_{z[i]}, \sigma_{z} \right).
+\end{align}
+Under this setup, the average treatment effect is $\beta = \mu_{z = 1} - \mu_{z = 0}$. From that starting point, it is straightforward to place equal priors on both treatment groups.
+
+
+
+
+## Bayesian Opportunities {#sec:opportunities}
+
+There are plenty more things a researcher could consider when estimating a causal model with a Bayesian approach. These are circumstances when we have knowledge about how a model should behave that the model is not guaranteed to learn from the data.
+
+- **Bounds:** We often deal with parameters that have natural bounds. Variance parameters will be positive. Probabilities will not exceed $0$ or $1$.
+- **Scale:** If we know the scale of an outcome variable, we know a lot about what parameters we could expect from the model that generates  that data. Standardization can aid. 
+- **Multilevel data:** Lots of datasets have hierarchical structure. In experimental and causal inference contexts this could be included by clustered randomization, repeated observations within-unit, correlated error across time periods or within clusters of data, and more. Bayesian models allow the researcher to directly estimate the variance at each hierarchical level, sidestepping the need for post-hoc standard error corrections.
+- **Regularization:** Some experiments use several treatments and either compute marginal treatment effects or complex interactions. As the number of interesting comparisons multiply, priors can be used to do partial pooling, regularize estimates against noisy comparisons, and counter the "multiple comparisons" problem.
+
+Political scientists have put Bayesian analysis to work in plenty of observational work for measurement [@clinton2004statistical; @kernell2009giving; @park2004bayesian], text data [@grimmer:2010:bayes-topic-model], heterogeneous effects [@western:1998:causal-heterogeneity], meta-analysis and model averaging [@montgomery-nyhan:2010-bma], time series [@brandt-freeman:2006:bayes-ts], and time-series cross-sectional data [@shor-et-al:2007:bayes-tscs]. It is far less common in experimental and observational causal inference work, but not truly absent. Bayesian methods have been employed to tackle heterogeneous treatments [@green-kern:2012:bart; see also @hill:2011:bart], modeling noncompliance and nonresponse [@horiuchi2007designing], multi-stage models such as instrumental variables [@hollenbach-et-al:2018:bayes-iv], and conjoint experiments [@jensen-et-al:2019:city-polarization]. Other researchers outside of political science have explored Bayesian regression discontinuity outside of political science [e.g.\ @chib-jacobi:2016:bayes-rdd; @branson-at-al:2019:bayes-rdd]
+
+This paper uses two examples from published political science research to demonstrate how these "Bayesian opportunities" arise and how a researcher might safely address them. I will preview these cases now and implement Bayesian approaches later in Section&nbsp;\@ref(sec:demo).
+  \todo{be nice}
+<!-- some words about how we're not aiming to undermine any conclusions, only to show areas where these opportunities arise -->
 
 
 ```{r hall-data}
@@ -599,11 +426,10 @@ cuts <-
   gather(key = param_name, value = value) %>%
   mutate(param_name = as.factor(param_name))
 
-# plot parameters
-g_invalid_pars <- invalid_hall %>%
-  gather(key = param, value = value, 
-         # treatment_effect, 
-         alpha_1, alpha_2) %>%
+
+# pivot-long intercepts
+hall_invalid_ints <- invalid_hall %>%
+  gather(key = param, value = value, alpha_1, alpha_2) %>%
   mutate(
     invalid = 
       case_when(
@@ -611,256 +437,286 @@ g_invalid_pars <- invalid_hall %>%
         str_detect(param, "alpha") ~ between(value, 0, 1) == FALSE
       ) %>%
       as.factor(),
-      param_name = 
-        case_when(param == "treatment_effect" ~ "Treatment Effect", 
-                  param == "alpha_1" ~ "Control Intercept", 
-                  param == "alpha_2" ~ "Treatment Intercept") %>%
-        as.factor() %>%
-        fct_relevel("Control Intercept", "Treatment Intercept"
-                    # , "Treatment Effect"
-                    ),
+    param_name = 
+      case_when(param == "alpha_1" ~ "Non-Extremist Intercept\n(Control)",
+                param == "alpha_2" ~ "Extremists Intercept\n(Treatment)") %>%
+      fct_rev()
   ) %>%
-  ggplot(aes(x = value)) +
+  print()
+
+
+
+g_invalid_pars <- 
+  ggplot(hall_invalid_ints, aes(x = value)) +
     geom_histogram(binwidth = 0.05,
                    boundary = 1,
-                   aes(fill = fct_rev(invalid)),
+                   color = "black", size = 0.25,
+                   aes(fill = (invalid)),
                    show.legend = FALSE) +
-    facet_wrap(~ param_name, scales = "free_x") +
-    # scale_fill_manual(values = c("TRUE" = "tomato", "FALSE" = "gray")) +
-    viridis::scale_fill_viridis(option = "magma", discrete = TRUE,
-                                begin = 0.7, end = 0.2) +
-    labs(y = "Count", x = "Parameter Value") +
-    geom_vline(data = cuts, aes(xintercept = value), linetype = 2, 
-               color = "gray")
+    facet_wrap(~ param_name, scales = "free_x"
+               ) +
+    scale_fill_manual(values = c("TRUE" = purp, "FALSE" = yel)) +
+    # viridis::scale_fill_viridis(option = "magma", discrete = TRUE,
+    #                             begin = 0.9, end = 0.5) +
+    scale_x_continuous(breaks = seq(-1, 2, .5)) +
+    labs(y = "Count", x = "Probability of Winning General Election") +
+    geom_vline(xintercept = c(0, 1), linetype = "dotted") 
 
 
 # treatment effect stacked hist
-g_invalid_trt <- invalid_hall %>%
-  mutate(invalid_any = as.factor(invalid_any)) %>%
-  ggplot(aes(x = treatment_effect)) +
-  geom_histogram(binwidth = 0.05,
-                 boundary = 1,
-                 aes(fill = fct_rev(invalid_any)),
-                 show.legend = FALSE) +
-  facet_wrap(~ "Treatment Effect") +
-  # scale_fill_manual(values = c("TRUE" = "tomato", "FALSE" = "gray")) +
-  viridis::scale_fill_viridis(option = "magma", discrete = TRUE,
-                              begin = 0.7, end = 0.2) +
-  labs(y = "Count", x = "Parameter Value") +
-  annotate(geom = "text", x = -1, y = 150, 
-           label = "Impossible\nparameter\ncombinations",
-           family = "Source Sans Pro",
-           vjust = -0.2) +
-  annotate(geom = "segment", x = -1, y = 150, xend = -0.75, yend = 100)
+g_invalid_trt <- 
+  ggplot(invalid_hall, aes(x = treatment_effect)) +
+    geom_histogram(binwidth = 0.05,
+                   boundary = 1,
+                   color = "black", size = 0.25,
+                   aes(fill = fct_rev(as.factor(invalid_any))),
+                   show.legend = FALSE) +
+    facet_wrap(~ "Treatment Effect of Extremism\nat Discontinuity") +
+    scale_fill_manual(values = c("TRUE" = purp, "FALSE" = yel)) +
+    # viridis::scale_fill_viridis(option = "magma", discrete = TRUE,
+    #                             begin = 0.9, end = 0.5,
+    #                             direction = -1) +
+    labs(y = "Count", x = "Effect on Win Probability") +
+    annotate(geom = "text", x = -1, y = 150, 
+             label = "Impossible\nparameter\ncombinations",
+             size = 3,
+             family = "Source Sans Pro",
+             vjust = -0.2) +
+    annotate(geom = "segment", x = -1, y = 150, xend = -0.75, yend = 100)
 
-g_invalid_trt / g_invalid_pars
+g_invalid_pars + g_invalid_trt
 ```
 
-I begin by recreating this model using a Bayesian approach with flat priors. I estimate the model using the "indexing" functional form rather than the "interactive" form, in order to better control the prior specification. We index the treatment status with $w \in \{1, 2\}$, which equals 2 if the extremist candidate wins the primary. First the model assumes that $y_{dpt}$ is distributed Normal with conditional mean $\mu_{dpt}$, which is equal to the RD linear predictor,
-\begin{align}
-  y_{dpt} &\sim \mathrm{Normal}\left( \mu_{dpt}, \sigma \right), \\ 
-  \mu_{dpt} &= \alpha_{w[dpt]} + \delta_{w[dpt]}M_{dpt},  
-\end{align}
-where $\alpha_{w}$ are the treatment and control intercepts, and $\delta_{w}$ are the coefficients on the extremist primary margin $M_{dpt}$. The parameters $\alpha_{w}$, $\delta_{w}$, and $\sigma$ are all given improper flat priors, so the posterior distribution is proportional to the likelihood of the data. The treatment effect at the discontinuity is the difference in the intercepts between extremist primary winners and losers: $\alpha_{2} - \alpha_{1}$.
+First is a regression discontinuity study examining the effect of ideological extremism in U.S.\ House elections @hall:2015:extremists. When a primary election between an extremist and a non-extremist candidate is decided by a "coin-flip" result, the discontinuity provides identifying variation in candidate ideology for the general election. The author finds that when the extremist candidate wins the primary, they are less likely to win the general election by 53 percentage points. This result is obtained from a linear probability model (LPM), which is often preferred because it is simple and can recover unbiased treatment effects at the discontinuity under the right assumptions [@lee-lemieux:2010:rdd]. In this case, we know that the probability of winning the general election is bounded at 0% and 100%, but the model does not. Researchers often accept this "unrealistic" behavior of LPMs because they are easy to interpret. This is understandable, but if one of the advantages of causal inference is to be realistic [@samii:2016:causal-empiricism], it is fair to say that the treatment effect is important enough that it should not be contaminated by problematic assumptions (or lack of assumptions) in any model. In this particular analysis---which is only a fraction of the larger study, to be clear---the model happens to place a substantial amount of posterior mass on treatment effects that we would consider impossible.
 
-The results with flat priors are, unsurprisingly, almost identical to the OLS model. I estimate a `r -1 * 100 * win_prob_reduction` percentage point reduction in the probability of winning the general election compared to Hall's 53 percentage points. The Bayesian model, however, reveals that a significant fraction the posterior samples are nonsensical. Because the model is estimating the probability of winning, we know that the treatment and control constants should always be between 0 and 1.^[
-  Linear probability models sometimes generate predicted values outside of $(0, 1)$ as a consequence of the linear function form, but it's fair to say that the treatment effect is important enough that we should not estimate it using impossible parameter values.
-]
-The flat priors model, however, finds that a significant share of posterior samples fall beyond the boundaries of possibility, either because the control group constant or the treatment group constant suggests win probabilities less than 0 percent or greater than 100 percent. Figure&nbsp;\@ref(fig:plot-hall-flat-params) plots the marginal distribution of the treatment effect (top panel), which is the difference between the control and treatment group intercepts (lower panels). Points are colored to indicate which posterior samples contain impossible parameter values. For the control group constant, `r 100 * round(p_invalid_a1, 3)` percent of posterior samples are greater than $1.0$. Another `r 100 * round(p_invalid_a2, 3)` percent of treatment group samples are below $0.0$ or greater than $1.0$.
-  \todo{wimpy}
-  <!-- rephrase this so we don't need to talk about treatment intercepts -->
-As a result, this model gives us a treatment effect estimate where `r 100 * round(p_invalid, 2)` percent of posterior samples contain at least one impossible parameter value, given the prior information that we have about vote shares.
 
-```{r plot-hall-flat-params, include = TRUE, fig.width = 5, fig.height = 5, out.width = "70%", fig.cap = 'Posterior samples from replicated \\cite{hall:2015:extremists} model using flat priors. Dashed lines in lower panels indicate the boundary between possible and impossible intercept values'}
+```{r plot-hall-flat-params, results = 'hide', fig.show = 'asis', include = TRUE, fig.width = 8, fig.height = 3, out.width = "100%", fig.cap = "Histogram of posterior samples from Hall's \\citeyearpar{hall:2015:extremists} regression discontinuity design, recreated using a Bayesian model with flat priors. Dashed lines in left two panels indicate the region of possible parameter values."}
 ```
 
-\todo{param}
-<!-- How best to think about the appropriate "parametric" truth of the RDD model... where does "semiparametric" stop -->
+I demonstrate this behavior of the model in Figure&nbsp;\@ref(fig:plot-hall-flat-params), which shows a Bayesian replication of the original model using flat priors. The left two panels show histograms of posterior samples for the the probability of winning at the discontinuity for non-extremists ("control," the first panel) and extremists ("treatment," the second panel). Although the posterior means and modes are within the realistic range of data, a large share of posterior samples for non-extremist candidates exceed 100% probability of winning, and some samples for extremists indicate a probability of winning less than 0% or greater than 100%. The rightmost panel plots the histogram of treatment effects using posterior samples, which is the difference in the intercepts for extremists minus non-extremists. Treatment effects that are composed of at least one "impossible" parameter are indicated with a different color. Of all the treatment effects sampled from the posterior  distribution,  `r percent(p_invalid, accuracy = 1)` are a function of at least one impossible parameter value. I correct this behavior with a Bayesian model in Section&nbsp;\@ref(sec:demo-wips), estimating a treatment effect with 20% lower magnitude but also lower variance.
+  \todo{howmuch?}
+  <!-- how much lower variance? -->
+
+The second application in this paper is an experimental study of public opinion on unilateral actions by presidents [@reeves-et-al:2017:unilateral]. The original study uses a series of survey experiments to understand why the citizens' approval of unilateral action varies across certain legal and political contexts. I focus on one experiment that manipulated the specific policy tool or prerogative used by the president to justify unilateral action. The control group was asked to state their agreement with the statement, "Presidents should be able to make new policies without having those policies voted on by Congress." Treatments modified this statement; for example, "Presidents should be able to issue *national security directives* to make new policies without having those policies voted on by Congress" (emphasis mine). The set of policy instruments includes executive agreements, executive orders, national security directives, directing cabinet officials, initiating military operations, issuing proclamations, and issuing memoranda. 
 
 
-I explore two variations on this model that incorporate prior information about the basic structure of the problem. First is a linear regression with Gaussian errors, much like Hall explores in his original analysis. I have rewritten the equation in the "indexing" form as opposed to the "indicator" form as explained above. Let $w \in \{0, 1\}$ be the treatment status of district $d$ for party $p$ in year $t$, which equals 1 if the extremist candidate wins the primary. We index the parameters $\alpha_{w}$ and $\delta_{w}$ to be constants and the effect of the running variable for control and treated units,
-\begin{align}
-  y_{dpt} &\sim \mathrm{Normal}\left( \mu_{dpt}, \sigma \right) \\
-  \mu_{dpt} &= \alpha_{w[dpt]} + \delta_{w[dpt]}M_{dpt}
-\end{align}
-where $M_{dpt}$ is the extremist's primary margin. The treatment effect at the discontinuity can be found by calculating the difference in the intercepts between extremist primary winners and losers: $\alpha_{1} - \alpha_{0}$.
-
-The other variation takes the form of a logistic regression. We write the model beginning with the assumed outcome distribution and then specifying the linear predictor. I use $\pi$ to represent the general election win probability, and I distinguish the logistic regression from the linear regression by ysing $\psi$ to represent constants and $\gamma$ to represent slopes in the linear predictor.
-\begin{align}
-  y_{dpt} &\sim \mathrm{Bernoulli}\left(\pi_{dpt}\right) \\ 
-  \mathrm{logit}\left(\pi_{dpt}\right) &= \psi_{w[dpt]} + \gamma_{w[dpt]}M_{dpt}
-\end{align}
-Again, the treatment effect at the discontinuity can be calculated from the difference in the constants: $\psi_{1} - \psi_{0}$.
-
-
-
-
-## Prior Strategies
-
-Goals for priors: Parameters only allow $y$ values in the range of the data.
-
-- No $\alpha_{w}$ value outside of $(0, 1)$ should be possible *a priori*.
-- No $\delta_{w}$ value should lead us to predict values of $y$ outside of $(0, 1)$. This means that the bounds of $\delta_{w}$ are themselves a function of constants $\alpha_{w}$ and the extremist primary margin for a given observation.
-
-Let $M_{dpt}$ represent the extremist's primary margin in district $dpt$. Formally stated, if predictions for $y_{dpt}$ are defined by $\alpha_{w} + \delta_{w}M_{dpt}$, we want a prior for $\beta$ such that $0 < \alpha_{w} + \delta_{w}M_{dpt} < 1$, subject to $\alpha \in (0, 1)$. 
-
-Practically, we can calculate these bounds by using the bandwidth of $M_{dpt}$ around the threshold. Let the bandwidth be represented by $\omega$. When the primary candidate wins, the farthest value from the threshold that $M_{dpt}$ could take is $M_{dpt} = \omega$, and when the primary candidate loses, the farthest value from the threshold is $M_{dpt} = -\omega$. In order to constrain the slopes of the regression line, $\pm \omega$ is the farthest from the threshold that we need to consider. 
-
-When the extremist primary candidate loses, the regression line must satisfy
-\begin{align}
-  \alpha_{0} + (-\omega) \beta_{0} > 0 \\
-  \alpha_{0} + (-\omega) \beta_{0} < 1 .
-\end{align}
-When the extremist primary wins, the slope must satisfy
-\begin{align}
-  \alpha_{1} + \omega \beta_{1} > 0 \\
-  \alpha_{1} + \omega \beta_{1} < 1 .
-\end{align}
-Solving these inequalities for $\beta_{0}$ and $\beta_{1}$, respectively, we find that the following conditions must hold.
-\begin{align}
-  \frac{-\alpha_{0}}{-\omega} < \beta_{0} < \frac{1 - \alpha_{0}}{-\omega} \\[6pt]
-  \frac{-\alpha_{1}}{\omega} < \beta_{1} < \frac{1 - \alpha_{1}}{\omega}
-\end{align}
-
-
-## Uniform bounded priors
-
-For notational convenience, we define $x^{*}_{w}$ that equals $\min\left(M_{dpt}\right)$ when $w = 0$ and $\max\left(M_{dpt}\right)$ when $w = 1$. 
-\begin{align}
-  y_{dpt} &\sim \mathrm{Normal}\left(\mu_{dpt}, \sigma \right) \\
-  \mu_{dpt} &= \alpha_{w[dpt]} + \delta_{w[dpt]}M_{dpt} \\
-  \alpha_w &\sim \mathrm{Unif}\left(0, 1\right) \\
-  \beta_w &\sim  \mathrm{Unif}\left(\frac{- \alpha_{w}}{x^{*}_{k}}, \frac{1 - \alpha_{w}}{x^{*}_{k}} \right)\\
-  \sigma &\sim \mathcal{H}(\cdot)
-\end{align}
-
-
-<!-- 
-```{r, out.width = "100%", include = FALSE}
-include_graphics(here("writing", "figs", "hall-treatments.pdf"))
-```
-
-
-```{r, out.width = "90%", include = FALSE}
-include_graphics(here("writing", "figs", "hall-win-draws.pdf"))
-``` 
--->
-
-
-## Logistic Modeling with Priors
-
-The idea: 
-
-- the logistic model probably weakens the evidence for a treatment effect.
-- BUT logistic model combined with sensible priors could easily tighten this up, create more realistic model results
-
-
-
-# Demonstration: Pooling Treatment Effects for Regularization and Meta-Analysis
-
-Experiments often present opportunities for researchers to pool and regularize estimates.
-\todo{goal}
-<!-- What are we wanting to do with this? -->
-This allows us our models to "remember" what they've learned from one group when they go to the next group. It can be used to synthesize knowledge by "averaging over" a series of treatments, which is something that analysts typically do informally anyway. 
-\todo{why}
-<!-- Why would we want to do it? -->
-
-
-
-<!-- describe Reeves data, use quotes -->
-
-To demonstrate these practices, we use an experimental study of public opinion toward presidential powers by [@reeves-et-al:2017:unilateral] as a working example. The original study seeks to understand why the American public's approval of unilateral actions by the president vary across certain political contexts. In a series of survey experiments fielded on Amazon's Mechanical Turk, the authors measure participants' approval of unilateral actions while varying the identity of the hypothetical president, the political circumstances surrounding the use of executive actions (e.g. the level of public support), and other legal and contextual factors. 
-
-For this example, we focus on a study that varied the policy tool used to implement a unilateral action. Participants in the control group were asked to state their agreement with the statement, "Presidents should be able to make new policies without having those policies voted on by Congress." Treatments introduced information about the specific policy tool or prerogative used by the president to implement the action; for example, "Presidents should be able to issue *national security directives* to make new policies without having those policies voted on by Congress" (emphasis mine). The set of policy instruments includes executive agreements, executive orders, national security directives, directing cabinet officials, initiating military operations, issuing proclamations, and issuing memoranda. They hypothesize...
-  \todo{check}
-
-
-
-
-
-
-```{r original-reeves, out.width = "70%", include = TRUE, fig.cap = "Treatment Effect Estimates from \\citet[Figure 3, p.~458]{reeves-et-al:2017:unilateral}"}
+```{r original-reeves, out.width = "65%", include = TRUE, fig.cap = "Treatment Effect Estimates from \\citet[Figure 3, p.~458]{reeves-et-al:2017:unilateral}"}
 include_graphics(here("writing", "img", "reeves-trt.png"))
 ```
 
-Treatment effects were estimated using $t$-tests to compare the proportion of respondents who approved of the unilateral action in the control condition to each treatment group. Figure&nbsp;\@ref(fig:original-reeves) presents the authors' original figure contrasting each treatment to the control group. They find that the treatment effects are all positive, suggesting that the public is more supportive of unilateral action when they are reminded of the president's specific policy instruments. The treatments effects are rarely significant, however, which leads the authors toward a cautious interpretation of their results. They write,
+The original figure of results (from $t$-tests) is shown in Figure&nbsp;\@ref(fig:original-reeves). Treatment effects were all positive, but because most of one-off effects were statistically insignificant the authors initially conclude that information about policy instruments or prerogatives has minimal effects. Their interpretation of the effects veers in an informally Bayesian direction when they note the similarity of the effects overall: 
 
-> Though all other average treatment effects are positive, the 95% confidence interval for each includes zero. While asking individuals about specific unilateral tools seems to increase their support for unilateralism, these effects are minimal and generally not statistically significant. (p.&nbsp;458)
+> \onehalfspacing At the same time, [...] the treatment effects displayed in [the figure] are uniformly positive, which suggests that providing more detailed information about the president’s behavior increases public support for that action. Given low levels of public knowledge about the different tools of unilateral action, it is possible that providing respondents with even more specific information about each of them would generate larger differences in levels of support.
 
-The authors also note the consistency across all of the effects, and they interpret the overall evidence by informally averaging across the treatment effects. They write,
 
-> At the same time, [...] the treatment effects displayed in [the figure] are uniformly positive, which suggests that providing more detailed information about the president’s behavior increases public support for that action. Given low levels of public knowledge about the different tools of unilateral action, it is possible that providing respondents with even more specific information about each of them would generate larger differences in levels of support.
-
-With a Bayesian approach, we can perform this sort synthesis and meta-analysis formally rather than informally, by specifying a model through which to understand all of the treatment effects. 
-
-  \todo{check}
-<!-- specific finding -->
+Interpreting the results this way is partial pooling, done informally. Because the treatments share many similarities, it makes sense to combine some information across treatments to get a general sense of the distribution of similar treatments. This is reasonable; it would be unlikely to observe seven positive estimates if the null hypothesis is true.^[
+  For the curious, if we use a binomial distribution to calculate the probability of observing zero negative estimates out of seven under the null, the probability is approximately `r pbinom(0, 7, 0.5) %>% round(3)`.
+]
+By building a Bayesian model for these treatment effects, we can do partial pooling formally rather than informally. The results in Section&nbsp;\@ref(sec:demo-pooling) show that allowing the model to combine information across treatments leads to more precise estimates for each one-off treatment effect, and it shows that the overall mean of the treatments is positive
 
 
 
 
 
+# Tensions and Disagreements
+
+There is some tension between Bayesian practices and causal inference as they are currently performed in political science. While I think much of this is owed to misunderstandings across the divide, open adjudication of the tensions whatever their cause should make any prospect for cooperation easier for both sides. I think this paper will be nothing more than a jumping off point and that much more work can be done to link the applications of Bayes and causal inference in political science. I will start by discussing some hesitations about Bayesian analysis from the viewpoint of causal inference, and then I will offer some words to ease those hesitations. The point is not to invalidate or undermine these hesitations; the hesitations are fair and respectable. The point is to work toward common ground where Bayesian analysis can be done in a way that is respectful of the skeptical view.
+
+Much of the tension comes from the supposed clash between minimalist and maximalist approaches to statistical analysis. Causal inference in minimalist, experiments are simple, and nonparametric estimators rely on fewer assumptions. With all that work to identify a causal effect with as few assumptions as possible, why throw all that parsimony away by adding a bunch of priors? 
+
+The response is that I think the view that Bayesian modeling is maximalist is a result of its niche in the field, not because of anything inherent to what Bayesian analysis is. It happens to be the case that Bayesian modeling in political science leans toward maximalism because the flexibility of the framework has made it a tool-of-choice for particular types of problems, but ultimately, Bayesian analysis is "merely" an approach to parameter estimation. It has the flexibility to be maximalist, but it could be put to simple uses as well. And if Bayesians want to participate in causal inference in political science, they should probably get comfortable scaling back the complexity of their models. One way to help normalize Bayesian analysis for "ordinary" data analysis problems would be for Bayesians to do participate in more "ordinary" data analysis.
+
+Causal inference prefers nonparametric models as a default [@keele:2015:causal-inf]. Does this rule out Bayesian approaches, which tend to use parametric models? Not necessarily. While there are nonparametric approaches to Bayesian analysis [@ghosal-vandervaart:2017:NPB; @muller-et-al:2015:BNP], they tend to be complex and not in the same spirit as nonparametric causal inference. It makes much more sense to model the nonparametric estimate itself as a draw from a the true parameter, which has a prior. I use this approach below to analyze the presidential powers experiment (Section&nbsp;\@ref(sec:demo-pooling)). This can be especially helpful when nonparametric or semiparametric approaches give results that violate reasonable priors, which I also demonstrate with the House elections RDD (Section&nbsp;\@ref(sec:demo-wips)).
+
+Before moving away from the subject of complexity, I think it is appropriate to ask whether experiments will always be so simple. As more political scientists adopt causally rigorous research approaches, experiments and other causal methods will probably become more complex. As a result, demand for statistical tools to deal with these problems would likely increase. 
+
+Priors are another area of hesitation. Even if a skeptic of Bayesian methods is convinced that flat priors are unrealistic and upweight extreme estimates, it's fair to question the value of priors in purely a pragrmatic or rhetorical perspective. Suppose that the prior doesn't add anything; the difference of means is statistically and substantively significant: then what's the point of the prior? On the flip side, suppose that the difference of means is noisy: would you trust a prior that showed you something that the data didn't show? 
+
+This pragmatic view is understandable, but I think it misunderstands where priors are most effective in applied circumstances. Firstly, priors are not tools for dealing with confounding, so the fact some data come from an experiment is not fundamentally at odds with Bayesian analysis. More importantly, priors are most effective by including weak information. It's helpful to think of priors as *stabilizing* parameter estimates, not by upweighting the researcher's preferred hypothesis but by downweighting parameters that would be unbelievable to the researcher or impossible by the nature of the data. The primary effect of these priors is to provide just enough structure to regularize models against overfitting to noisy data and thus overrejecting null hypotheses.
+
+There is lastly the issue that if Bayes were given space in causal inference, researchers would have to expend a lot of effort to learn how to interpret Bayesian analysis. This is true, but I think it's a fair trade. Causal inference is also very difficult to learn, and it is likely to drastically alter the trajectory of empirical political science. Learning new things is good. It makes us all smarter, more creative, and more open-minded to diverse methodological approaches. 
 
 
 
-Rationale of pooling:
 
-- Affected by a *general* attitude toward unilateral power
-- but certain contexts are deviations from the mean
-- simultaneously estimate the mean and the deviations by modeling each context as a draw from a common distribution
-- this is how they interpret the results, but they do it informally. By setting up a partial pooling model, we are doing it formally, and we are going to do it with fairly weak priors.
+# Practical Bayes for Skeptical Causal Inference {#sec:advice}
+
+There are opportunities to improve data analysis using Bayesian approaches in ordinary circumstances as well as in extraordinary circumstances. Bayesian analysis is controversial though, so it should be done with caution. This section discusses a handful of Bayesian tricks that can strengthen a the estimation of causal parameters without stacking too many difficult assumptions atop the design. This section can serve both as advice to modelers and as reassurances to Bayesian skeptics that the tools of the Bayesian trade can be applied conservatively and carefully.
+
+#### Focus on model-heavy designs and secondary analyses, not the difference in means.
+I used to have a friend who would get himself into fist fights. I once asked him what to do if I ever found myself in a fight. The first thing he told me was, "Know when *not* to fight." This is a good starting point for thinking about where Bayes could be used to perform causal inference. For instance, always show the difference in means, even if you think it could be improved. Everybody will want to see it without any extra flourishes. Instead, Bayesian analysis could be more effectively used where the researcher relies more on modeling. Some identification strategies are more model-driven than others, such as regression and difference-in-differences. Secondary analysis after the main result also tend to be more model-driven as researchers perform robustness checks and test alternative hypotheses. These areas are where priors can noticeably stabilize an estimate and add clear value to the analysis. 
+
+#### Information, not belief.
+Priors are sometimes described as a researcher's "beliefs," which is worrisome for empiricism. Most of the time it makes more sense to talk about priors as statements of "information" rather than belief. A prior is an assumption that brings in information that is external to the raw algebra of the model. Although there are subjectivist schools of Bayesian theory, applied work views priors as "just part of the model" and should be "chosen, evaluated, and revised just like all of the other components of the model" [@mcelreath:2015:stats-rethink]. Since any model is an inaccurate depiction of the world, the researcher's degree of belief in any prior should be zero; priors should instead be understood as part of the *science* of the model because they can be tested by comparing new data against the model's posterior predictions [@gelman-shalizi:2013:bayes-philosophy].
+
+
+#### Weakly informative priors.
+A researcher who wants to make causal inference with Bayesian analysis is walking a fine line. Priors are valuable, but most readers will be skeptical of their usage. Researchers should strike a balance with a *weakly informative prior*, which is designed so that "the information it does provide is intentionally weaker than whatever actual prior knowledge is available" [@gelman2006varianceprior]. The goal is to provide just enough regularizing information to downweight parameters that would be ludicrous or impossible if the researcher were to encounter them, but not so much information to fight against the data.
+
+One helpful approach for developing weakly informative priors is to standardize variables for a model. This makes it much easier to set priors for intercepts, coefficients, and variances by using the standard deviation as a helpful heuristic. We are pretty sure that treatment effects and standard deviations will not exceed $1$ in most cases. We are even more assured that neither of these parameters should exceed the full range of the outcome data, so other methods of scaling can be used to improve a prior.
+
+```{r, logit-treatment}
+n_logit_sims <- 100000
+
+logit_example <- 
+  tibble(`Normal(0, 5)` = rnorm(n_logit_sims, 0, 5),
+         `Normal(0, 1.5)` = rnorm(n_logit_sims, 0, 1.5),
+         `Normal(0, 1)` = rnorm(n_logit_sims, 0, 1),
+         `Normal(0, 0.5)` = rnorm(n_logit_sims, 0, 0.5)) %>%
+  gather(key = prior, value = sample, contains("Normal")) %>%
+  mutate(prob = plogis(sample), 
+         effect = prob - 0.5,
+         prior = fct_relevel(prior, "Normal(0, 5)", "Normal(0, 1.5)", "Normal(0, 1)")) %>%
+  print()
+
+```
+
+```{r plot-logit-treatment, include = TRUE, fig.width = 5, fig.height = 4, out.width = "80%", fig.cap = "The implications of flat priors. Histograms show prior simulations for logistic regression model coefficients. Prior draws are Normal on the log-odds scale but transformed to the probability scale."}
+ggplot(data = logit_example, aes(x = prob)) +
+  facet_wrap(~ prior, nrow = 2, scales = "free_y") +
+  geom_histogram(binwidth = 0.025, boundary = TRUE,
+                 fill = yel, 
+                 color = "black", size = 0.25) +
+  labs(x = "Effect on predicted probability", y = "Prior draws") +
+  scale_y_continuous(labels = comma,
+                     expand = expand_scale(mult = c(0, .3)))
+```
+
+One common example for demonstrating weak information is logistic regression. The log-odds scale extends from $-\infty$ to $+\infty$, but only a small fraction of the log-odds scale maps to probabilities between 1 and 99 percent. For a control group with a predicted probability of 50%, a treatment effect of 3.0 on the log odds scale is an effect of more than 40 percentage points.^[
+  $\mathrm{invlogit}(3) = `r round(plogis(3), 3)`$
+]
+So for most social science studies, a prior in a logistic regression can safely assume that coefficients of $3$ or larger are pretty unlikely. Figure&nbsp;\@ref(fig:plot-logit-treatment) shows how normal priors on the log odds scale translate into the probability scale. The top-right panel shows that a fairly weak $\mathrm{Normal}\left(0, 5\right)$ prior on the log-odds scale drastically upweighting very large and very small probabilities. A truly flat prior would be even more extreme, but the prior is implicitly flat for a traditional MLE logit model. It isn't until the prior standard deviation is near $1.5$ that the prior looks approximately flat on the probability scale. Priors like $\mathrm{Normal}\left(0, 1\right)$ and $\mathrm{Normal}\left(0, 0.5\right)$, which sound very narrow at first, are more in line with the expectations we often have in social science.
+
+Weakly informative priors can also be created using principles of maximum entropy. A maximum entropy distribution is the distribution that injects the least amount of prior information given the natural constraints of a problem. For instance, if a process has a mean and a variance, the least informative family of priors for that process is a Normal. These are the same properties that justify the use of likelihood families for generalized linear modeling.
+ \todo{cite}
+<!-- talk abt entropy -->
+At the same time, researchers sometimes deviate from maximum entropy priors and opt for some priors because they have desirable properties such as flatter tails than a Normal distribution [@gelman-et-al:2008:weak-logit].
+
+Researcher who include weakly informative priors can always simulate data from the prior. This allows the reader to glance the consequences of certain prior choices and facilitates transparency in model-building.
+
+#### Full uncertainty and regularization with multilevel models.
+Since many datasets have hierarchical structure, multilevel models are often appropriate to account for multiple sources of variance and correlated error within groups of data. By doing fully Bayesian estimation for multilevel models, all parameter and hyperparameter uncertainty is reflected in the posterior distribution. This allows researchers to build an honest model about multilevel data while being conservative about the amount of actually-existing variation. 
+
+Multilevel models are also helpful for partial pooling, which allows a model to learn about the shared characteristics of units and noisy shrink estimates toward the mean of the units. McElreath describes the intuition of partial pooling with a thought experiment about wait times at various cafés.^[
+  Mcelreath's example is featured in the second edition of his textbook (forthcoming), but is discussed in online lectures as well (see <https://github.com/rmcelreath/statrethinking_winter2019>).
+]
+We want to estimate how long it takes to wait in line for a cup of coffee, starting with a vague prior. As we order coffees from various cafés, we gradually learn several things about how long it takes to get a coffee. First, we get a sense how each individual café differs from others. Second, because cafés are pretty similar even if they aren't identical, we learn about the distribution of cafés and use this to pool the information we get from several cafés together. Lastly, because we can pool informationa bout similar cafés, we get a sense of the average and variance of cafés overall, which is what we're usually interested. Even if we haven't collected much data from a particular café, we have reasonably good expectations about it because our priors have been updated by our data from other cafés. This allows us to regularize estimates against noisy and prevent overfitting and type-one errors. We even have reasonable prior estimates for new cafés that we have never visited before because we understand the distribution from which the café is drawn. In short, as we  collect data from multiple clusters (cafés), but we are allowed to combine information across clusters in a way that teaches us about variation both within and between clusters. This is unlike the way we ordinarily handle clusters of data in political science, where we estimate all treatment effects separately with fixed effects. But there are some situations where pooling information across treatments is natural and intuitive, which I demonstrate in Section&nbsp;\@ref(sec:demo-pooling).
 
 
 
-Estimated effect for a specific treatment is a normal draw from the true effect for that treatment. This is what we normally think all the time! 
+
+
+# Estimating Causal Models Bayesianly {#sec:demo}
+
+
+## Regression Discontinuity using Weakly Informative Priors {#sec:demo-wips}
+
+Researchers often encounter modeling scenarios where the problem presents natural constraints on which parameter values are plausible or even possible. I introduced an example with regression discontinuity earlier where flat priors resulted in posterior treatment effect estimates that included "impossible" parameter combinations---predicted win probabilities greater than 100% or less than 0%. This section applies weakly informative priors to overcome this byproduct of the model and return more sensible estimates.
+
+The model we are replicating is the local linear RDD predicting the probability of winning the general election. Hall estimates this binary outcome using a linear probability model, where $y_{dpt}$ equals $1$ if the candidate in district $d$ in party $p$ in election $t$ wins the general election. Treatment is assigned when the extremist primary candidate's margin in the general election ($m_{dpt}$) is greater than 0. I begin by rewriting his model by indexing parameters according to treatment status in order to set priors more easily. Let's index the treatment status with $w \in \{1, 2\}$, which equals 2 if the extremist candidate wins the primary. First the model assumes that $y_{dpt}$ is distributed Normal with a conditional mean that is the prediction from the RD equation,
 \begin{align}
-  \hat{\beta}_{j} &\sim \mathrm{Normal}\left(\beta_{j}, \hat{\sigma}_{j} \right)
+  y_{dpt} &\sim \mathrm{Normal}\left( \alpha_{w[dpt]} + \delta_{w[dpt]}M_{dpt}, \sigma \right), 
 \end{align}
-We take the estimate for $\hat{\sigma}_{j}$ to be known, but we could easily assume that the estimated standard deviation is itself a draw from some other distribution.
+where $\alpha_{w}$ are the treatment and control intercepts, and $\delta_{w}$ are the coefficients on the extremist primary margin $M_{dpt}$. The treatment effect at the discontinuity is the difference between the intercepts for extremist primary winners and losers: $\alpha_{2} - \alpha_{1}$. At this point, the algebra of the model is no different from the original study.^[
+  Hall estimates both conventional and heteroskedasticity-robust standard errors in his paper and reports whichever is largest. For this model, it makes hardly any difference which standard error is used, so for simplicity I make no heteroskedasticity adjustments.
+]
 
-The true effect for each individual policy tool treatment is pooled toward the mean of all treatments that mention a policy tool---which isn't something that exists in the study but is the thing we're actually interested in. 
+For our prior, we do nothing more than truncate the prior distribution for the intercepts at $0$ and $1$. Aside from that, we put no additional prior information about which win probabilities are more likely for extremists or not-extremists. We do this with a uniform prior, $\alpha_{w} \sim \mathrm{Uniform}\left(0, 1\right)$. To isolate the effect of this one change, I will leave the other priors as flat.
 
-We experiment with several different priors on the pooling component to demonstrate that the effects are relatively inflexible to the choice of prior. 
-Suppose that $\beta_{j}$ has a prior that is some distribution $\mathcal{D}()$ that has mean $\mu$ and standard deviation $\psi$.
+```{r read-hall-brm}
+# fix
+hall_wip <- readRDS(here("data", "estimates", "hall", "brm-win_trunc.RDS"))
+hall_flat <- readRDS(here("data", "estimates", "hall", "brm-win_flat.RDS"))
+```
+
+
+```{r}
+long_hall_brm <- list("hall_wip" = hall_wip, 
+                      "hall_flat" = hall_flat) %>%
+  tibble(fit = .,
+         spec = names(.)) %>%
+  group_by(spec) %>%
+  mutate(wide = map(fit, spread_draws, b_control, b_treat)) %>%
+  unnest(wide) %>%
+  mutate(
+    `Non-Extremist\nIntercept (Control)` = ifelse(str_detect(spec, "logit"), plogis(b_control), b_control),
+    `Extremists Intercept\n(Treatment)` = ifelse(str_detect(spec, "logit"), plogis(b_treat), b_treat),
+    `Treatment Effect of Extremism\nat Discontinuity` = b_treat - b_control)  %>%
+  gather(key = param, value = value, -c(spec:b_treat)) 
+
+
+hall_saved <- long_hall_brm %>%
+  group_by(spec, param) %>%
+  summarize(mean = mean(value),
+            lower = quantile(value, .025),
+            upper = quantile(value, .975)) 
+
+```
+
+
+```{r plot-hall-post, results = 'hide', fig.show = 'asis', include = TRUE, fig.width = 8, fig.height = 3, out.width = "100%", fig.cap = "Comparison on posterior draws from Hall's \\citeyearpar{hall:2015:extremists} RDD with flat vs.\\ weakly informative priors."}
+# 
+hall_ints <- long_hall_brm %>%
+  filter(param != "Treatment Effect of Extremism\nat Discontinuity") %>%
+  mutate(param = fct_rev(param)) %>%
+  ggplot(aes(x = value)) +
+    facet_wrap(~ param, scales = "free") +
+    geom_histogram(aes(fill = spec),
+                   position = "identity",
+                   binwidth = .05, boundary = 1,
+                   alpha = 0.8, color = "black", size = 0.25,
+                   show.legend = FALSE) +
+    scale_fill_manual(values = c("hall_wip" = yel, "hall_flat" = purp)) +
+    scale_x_continuous(breaks = seq(-1, 1, .5)) +
+    labs(x = "Probability of Winning General Election",
+         y = "Count")
+
+hall_trts <- long_hall_brm %>%
+  filter(param == "Treatment Effect of Extremism\nat Discontinuity") %>%
+  mutate(param = fct_rev(param)) %>%
+  ggplot(aes(x = value)) +
+    facet_wrap(~ param, scales = "free") +
+    geom_histogram(aes(fill = spec),
+                   position = "identity",
+                   binwidth = .05, boundary = 1,
+                   alpha = 0.8, color = "black", size = 0.25) +
+    scale_fill_manual(values = c("hall_wip" = yel, "hall_flat" = purp),
+                      labels = c("hall_wip" = "Weak Info", "hall_flat" = "Flat")) +
+    scale_x_continuous(breaks = seq(-1, 1, .5)) +
+    labs(x = "Effect on Win Probability",
+         y = "Count",
+         fill = NULL) +
+    theme(legend.position = c(0.8, 0.8),
+          legend.background = element_blank())
+
+hall_ints + hall_trts
+
+```
+
+Figure&nbsp;\@ref(fig:plot-hall-post) compares the posterior distributions for the original flat priors model to this new "weakly informed" model. How did the prior change the posterior inference? The same way that priors normally do: the effect with more prior information is somewhat smaller than the effect with flat priors (by nearly ten points, `r hall_saved %>% filter(spec == "hall_wip") %$% mean[param == "Treatment Effect of Extremism\nat Discontinuity"] %>% round(2)` compared to `r hall_saved %>% filter(spec == "hall_flat") %$% mean[param == "Treatment Effect of Extremism\nat Discontinuity"] %>% round(2)`. The estimate is also more precise. This is because a good deal of posterior uncertainty was owed to model parameters that were impossible and should have been removed from the prior. As a result, the problematic behavior initially identified in the model was removed by merely specifying that the constants should fall between $0$ and $1$---something that we already knew ahead of time. Causal inference is still possible even with this small prior intervention, and our estimate resembles the original finding even though we've improved it.
+
+
+## Treatment Effects with Regularization and Partial Pooling {#sec:demo-pooling}
+
+Experiments and other identification strategies often provide researchers with clusters of information that can be combined in a principled way. Section&nbsp;\@ref(sec:opportunities) describes one such situation encountered by @reeves-et-al:2017:unilateral in an experimental study that measures how U.S.\ citizen approval of unilateral action by the president varies with information about the prerogative or policy tool employed. The authors estimate the effects of multiple similar treatments using separate $t$-tests but interpret the signal from the $t$-tests jointly (see Figure&nbsp;\@ref(fig:original-reeves) above). This section demonstrates how these treatment effects can be estimated in a way that preserves information about similar units in order to justify the joint interpretation on statistical grounds. This example also demonstrates how researchers can estimate nonparametric treatment effects as a first cut and model the true underlying effects in a Bayesian framework.
+
+Let $\hat{\beta}_{j}$ be the estimated treatment effect for treatment $j \in \{1, \ldots 7\}$, which is a difference from the control group mean. We assume (using the central limit theorem, as with all conventional means tests) that these estimates are Normal draws from the true mean $\beta_{j}$ and estimated standard error $\hat{\sigma}_{j}$.^[
+  In this example we take the value of $\hat{\sigma}_{j}$ to be known, but we could easily give it a prior and make the model even more uncertain. Since the standard deviations in these data are so, it makes little difference for this demonstration.
+]
 \begin{align}
-  \beta_{j} &\sim \mathcal{D}\left(\mu, \psi \right)
+  \hat{\beta}_{j} &\sim \mathrm{Normal}\left( \beta_{j}, \hat{\sigma}_{j} \right) %_
 \end{align}
 
-We experiment pooling using either a Normal and Student T family.
+Because these treatments are similar but not identical to one another, it makes sense that the original authors wanted to construct a joint interpretation of them, i.e.\ what is the "average" or "overall" effect among these variants of the treatment? This interpretation implicitly assumes that each observed treatment is a result of some underlying process. We build a model of that process using relaxed assumptions that combine information across treatment groups. The idea is that citizens have a *general* attitude toward unilateral power, but that the use of unilateral power in specific contexts are slight deviations from that mean. If we assume that deviations from the overall mean result from an additive accumulation of details about each treatment context, we end up with an assumption that the true effects $\beta_{j}$ are themselves distributed around a common mean $\mu$ with some hierarchical standard deviation $\psi$.
 \begin{align}
-  \beta_{j} &\sim \mathrm{Normal}\left(\mu, \psi \right), \mathrm{or} \\
-  \beta_{j} &\sim \text{Student's T}_{\mathrm{df} = 3}\left(\mu, \psi \right)
+  \beta_{j} &\sim \mathcal{Normal}\left(\mu, \psi \right)
 \end{align}
+I also estimate models that assume that $\beta_{j}$ is a draw from a Student's $T$ distribution with $3$ degrees of freedom. This is a more relaxed prior that has fatter tails, giving more prior weight to larger deviations from the center of the distribution.
 
-We also experiment with two ways to estimate $\psi$.
-\begin{align}
-  \psi &\sim \text{Half-Cauchy}\left(0, 1\right), \mathrm{or} \\
-  \psi &\sim \mathrm{Uniform}\left(0, 10\right)
-\end{align}
+As a result, we have a multilevel model where the true means for each treatment are themselves given a model in order to understand the overall distribution of treatments. This approach allows the model to remember what it learned from treatment $1$ when it estimates the effect of treatment $2$. It allows the model to synthesize information across all treatments into its own meta-analysis that results in a posterior estimate of the grand mean of all treatments $\mu$.
 
-Lastly, our prior for the "true" effect we allow to be flat. It's impossible, given the outcome scale, to have a treatment effect more extreme than $\pm 1$, so we use a Uniform prior that respects our information about the outcome scale.
-\begin{align}
-  \mu &\sim \mathrm{Uniform}(-1, 1)
-\end{align}
+Naturally we have to specify priors for $\mu$ and $\psi$. I use very weakly informative priors to demonstrate the robustness of the hierarchical model specification. Because the outcome scale is a probability on a $0$--$1$ scale, the maximum possible range of treatment effects is $(-1, 1)$. As a result, I give $\mu$ a $\mathrm{Uniform}\left(-1, 1\right)$ prior, which does nothing but rule out impossible treatment effects. The prior for the scale parameter $\psi$ is also extremely weak, I use either a $\mathrm{Uniform}\left(0, 2\right)$ or a $\text{Half-Cauchy}\left(0, 1\right)$ prior. Both priors are wider than the possible variance parameters that could exist; the half-Cauchy in particular encompassing the entire range of possible treatment effects within $\pm 1$ scale distance from the center of the distribution.
 
-### Old
-
-Let $\hat{\beta}_{j}$ be the estimate we get in a study context $j$. We assume that this estimate is Normally distributed around the true effect $\beta_j$; this is the basis of generating the estimate with a standard error and a confidence interval.
-\begin{align}
-  \hat{\beta}_{j} &\sim \mathrm{Normal}\left(\beta_{j}, \hat{\sigma}_{j} \right)
-\end{align}
-
-We are able to pool information across study contexts by assuming that each context $j$ is a draw from an overall distribution of contexts. If we assume that the differences across contexts lead to different treatment effects by the additive accumulation of treatment features, this gives us an assumption that the treatment effect for a given context is a Normal draw from the true treatment effect $\mu$ (which is marginal of all treatment variations).
-\begin{align}
-  \beta_{j} &\sim \mathrm{Normal}\left( \mu, \psi \right)
-\end{align}
-
-We place a prior on the true treatment effect. Because we know that the outcome scale is bounded by 0 and 1, a $\mathrm{Uniform}(-1, 1)$ prior allows us to cover the entire range of possible treatment effects (and then some) while staying flat over supported values. Lastly, our prior for the variance of the distribution. We use a Half-Cauchy distribution with a scale parameter equal to 1. Thus our prior is that the typical treatment effect could be as different as the entire outcome scale (0 to 1). This is much wider than when we would expect from the distribution of treatments.
-  \todo{how wider}
-\begin{align}
-  \mu &\sim \mathrm{Uniform}\left(-1, 1\right) \\
-  \psi &\sim \text{Half-Cauchy}(0, 1)
-\end{align}
 
 ```{r read-reeves}
 # reeves <- readRDS(here("data", "processed", "reeves-et-al.Rds")) 
@@ -868,12 +724,21 @@ reeves <- readRDS(here("data", "processed", "reeves-treatments.Rds"))
 ```
 
 
+
+```{r read-pool-hypermeans}
+mus <- readRDS(here("data", "processed", "negative-hypermeans.Rds")) 
+```
+
+```{r negative-mu}
+mus
+```
+
+
 ```{r plot-reeves, include = TRUE, fig.width = 8, fig.height = 4, out.width = "100%", fig.cap = "Compare to Figure~\\ref{fig:original-reeves}"}
 reeves <- reeves %>%
-  mutate(spec_label = str_replace_all(specification, "_", "-") %>% 
-                      str_replace_all("t\\-", "T-") %>% 
+  mutate(spec_label = str_replace_all(specification, "_", "/") %>% 
+                      str_replace_all("t/", "T/") %>% 
                       tools::toTitleCase())
-  
 
 ggplot(reeves, aes(x = (treatment), y = estimate)) +
   geom_hline(yintercept = 0) +
@@ -882,91 +747,38 @@ ggplot(reeves, aes(x = (treatment), y = estimate)) +
     position = position_dodge(width = 0.5)
   ) +
   viridis::scale_color_viridis(
-    option = "magma", discrete = TRUE, end = 0.85
+    option = "magma", discrete = TRUE, end = 0.75
   ) +
   labs(x = NULL, y = "Treatment Effect",
-       color = "Pooling Priors (Mean-SD)") +
+       color = "Pooling Priors") +
   coord_cartesian(ylim = c(-.1, .2)) +
   theme(axis.text.x = element_text(angle = 45, vjust = 0.6), 
         # legend.position = c(0.8, 0.3),
         legend.background = element_blank()) +
   scale_y_continuous(labels = percent_format(suffix = " pp.", accuracy = 1))
 
-
-# ggplot(reeves 
-#        # %>% filter(Model == "Bayes")
-#        , aes(x = fct_rev(treatment), y = estimate)) +
-#   geom_hline(yintercept = 0) +
-#   geom_pointrange(aes(ymin = conf.low, ymax = conf.high, 
-#                       color = fct_rev(Model)
-#                       ),
-#                   position = position_dodge(width = -0.5),
-#                   # fill = "white"
-#                   # shape = 21
-#                   # show.legend = FALSE
-#                   ) +
-#   viridis::scale_color_viridis(option = "magma", discrete = TRUE,
-#                               begin = 0.7, end = 0.2) +
-#   coord_flip() +
-#   labs(x = NULL, y = "Treatment Effect", color = NULL) +
-#   ylim(c(-0.07, 0.2)) +
-#   theme(axis.text.x = element_text(angle = 90, vjust = 0.8),
-#         legend.position = c(0.8, 0.3))
-
 ```
 
+Figure&nbsp;\@ref(fig:plot-reeves) shows the treatment effect estimates from these hierarchical models and the estimated "Overall Effect" ($\mu$) as well. I show the results of four models for each treatment: two different hierarchical priors for the treatments (Normal and $T$) and two different priors for the hierarchical scale parameters (Uniform and Half-Cauchy). Right away, it's clear that the estimates are robust to the choice of priors; what matters is that we pooled the treatments using a model at all. The multilevel model has the effect of shrinking estimates toward the mean of the distribution. This is because the prior for each treatment effect is adapting to the information learned about all treatment effects. If the model assumes that the treatments are draws from a common distribution, even if our priors about that distribution are very wide, then the model can rationalize more parameter estimates closer to the mean than farther from it. This makes sense; if all we know about the true parameter was that it was drawn from a distribution, we would place a stronger bet on the possibility that the true parameter is closer to the mean than it is farther away from it. In this example, the shrinkage estimates supported the authors' original interpretation of the study; if the model is allowed to combine information from similar treatments instead of being forced to forget information, the fact that all initial treatment effects were positive *did* strengthen the case in favor of a positive overall treatment effect. 
 
-<!-- 
-\begin{figure}[htb]
-    \begin{center}      
-        \begin{subfigure}[t]{0.49\textwidth}
-                \includegraphics[width=\textwidth]{img/reeves-trt.png}
-                \caption{}
-                \label{sfig:label1}
-        \end{subfigure}
-        \begin{subfigure}[t]{0.49\textwidth}
-                \includegraphics[width=\textwidth]{figs/plot-reeves-1.pdf}
-                \caption{}
-                \label{sfig:label2}
-        \end{subfigure}   
-        \caption{}
-        \label{sfig:label2}
-    \end{center}    
-\end{figure}
+The amount of pooling is not an arbitrary decision introduced by the researcher. Rather, the appropriate amount of pooling is learned from the data because the distribution of groups is updated during model fitting. For this reason, the hierarchical prior is commonly called an "adaptive" prior because its parameters ($\mu$ and $\psi$) are estimated from the data rather than specified exactly by the researcher. The researcher can ask the model for more pooling by placing a tighter prior on the hierarchical scale, but this is often unnecessary because pooling can be achieved even with vague and weakly informative priors [@gelman2006varianceprior].^[
+  Researchers sometimes object to multilevel or "random effects" models on the grounds that it assumes that groups are *exchangeable*---there is no information that we have that would lead us to assign a different prior for any group or subset of groups. But this is the same assumption that all regression modeling makes at the unit level, and any regression of groups such as U.S.\ states or countries makes the same assumption. The assumption is easier to justify if the hierarchical mean is itself a regression on covariates, in which case exchangeability applies only to the regression errors.
+]
+At the same time, it is good to remember that the hierarchical prior is just that: a prior. It does not require that the draw of groups in the data has perfectly symmetrical shape. It is more appropriate to imagine that the posterior distribution contains an infinite number of group configurations---some more symmetrical than others---that are weighted by their plausibility given the adaptive prior and the data.
 
--->
+Partial pooling is appropriate for this example because it reflects the way we ordinarily learn about the world, appreciating the variation both within groups and across groups. It allows us to accumulate knowledge over clusters of data rather than throwing away information after each cluster. Second, partial pooling is fundamentally *conservative* because its primary consequence is to regularize estimates toward a common mean, protecting against the risks of small samples and noisy data. This regularization goes by other names in non-Bayesian contexts: ridge regression, penalized likelihood, and cross-validation approaches to model selection. It is "regression to the mean" as applied to model parameters.
+
+ 
 
 
-What else can we do here?
+# Unfinished Business
 
+The purpose of this paper is not to convert all causal empiricists to Bayesian analysis. Instead it modestly seeks to justify a space for Bayesian analysis in contemporary causal inference work in political science. Research designs with causal identification still present numerous opportunities for Bayesian analysis, but applied researchers have little precedent in the literature for seizing those opportunities. My goal for this paper is to help build that precedent by confronting the issue directly. Looking forward, many unresolved issues still remain. 
 
+Bayesian analysis is not automatic. Building a model with appropriate assumptions takes effort and can be slow. Although there are many small decisions a researcher could take through the model (a problem that is not unique to Bayesian analysis), the costs of model-building will deter the researcher from building 100 variations of a model and showcasing the nicest one.
 
+Pre-analysis plans (PAPs) are important for Bayesian and non-Bayesian analysis alike to manage the issue of "researcher degrees of freedom." For Bayesian analysis, PAPs should contain prior predictive simulations to check the reasonableness of model assumptions. Future work will showcase how prior predictive simulations can also be incorporated into a `DeclareDesign` workflow to reassure audiences that Bayesian approaches are not being used to $p$-hack (which is hard to do in Bayesian analysis anyway because most priors regularize against large, noisy effects).
 
+In conclusion, the causal inference movement in political science asks us to think harder and think better about how we estimate parameters. Bayesian causal inference helps us think harder about estimation in addition to research design.
 
-
-# Demonstration: Conjoint Design with Partial Pooling for Regularization
-
-
-
-
-## Prior PCs
-
-
-
-# Unresolved Issues
-
-- Thinking harder about the information you have
-  - Is an advantage of experiments that you can offload these demands?
-    - estimates may be inefficient, but that's conservative which we like
-    - What's the goal? Parameter estimation or minimizing type-1 error?
-  - Thinking harder is a benefit
-    - it reduces the risk of specifying 100 models
-  - Imagine that your "minimal" model gives you something that you don't really believe, but your maximal model gives you something more realistic looking. What do you do? 
-- Pre-analysis plans
-  - but Prior PCs
-- Non-Bayesian methods with similar benefits
-  - Regularization: cross-validation and ridge regression
-  - Computation (inference?): randomization inference
-    - RI is NHST-oriented and so should be treated with skepticism
-    - Keele, McC and White say that randomization inference "directly estimates the quantity of interest" in reference to the p-value. The quantity of interest is the causal effect. 
 
