@@ -70,8 +70,8 @@ output:
 <!-- BODY -->
 \hypersetup{pageanchor = true}
 \pagenumbering{arabic}
-\onehalfspacing
-<!-- \doublespacing -->
+<!-- \onehalfspacing -->
+\doublespacing
 <!--  -->
 
 
