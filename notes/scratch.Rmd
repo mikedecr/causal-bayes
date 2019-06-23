@@ -7,6 +7,16 @@ output:
 ---
 
 
+# How many papers are in here?
+
+1. This should be allowed and here's how (current)
+2. ID assumptions are priors
+  - nesting a conditional sensitivity test into a marginal sensitivity test
+3. Bayesian equivalence testing (why dichotomize)
+  - how would you update your priors about parameters that represent an identification assumption?
+  - $\tilde{y} = \int p(y, \theta, \phi \mid y)d\theta d\phi$
+  - or, the unobserved data is a function of model theta plus some fudge factors for other slippage in assumptions
+
 
 # Input from others
 
