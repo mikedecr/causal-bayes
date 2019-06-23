@@ -1,0 +1,496 @@
+---
+title: "Bayesian Causal Inference"
+subtitle: "( in Political Science )"
+author:
+- 
+- Michael G. DeCrescenzo
+- University of Wisconsin–Madison
+date: "April 26, 2019"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    mathjax: "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML"
+    # mathjax: "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_SVG"
+    css: xaringan-themer.css
+    seal: false
+    nature:
+      ratio: "16:9"
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      beforeInit: "https://platform.twitter.com/widgets.js"
+---
+
+class: middle
+
+```{r setup-rmd, include = FALSE}
+
+# rmarkdown::render(here::here("slides", "MPMC-2019", "mpmc-slides.rmd"))
+
+library("knitr")
+library("here")
+library("magrittr")
+library("tidyverse")
+library("ggplot2")
+library("scales")
+library("labelled")
+library("broom")
+library("latex2exp")
+library("ggmcmc")
+library("tidybayes")
+
+# graphics 
+source(here::here("slides", "MPMC-2019", "_assets", "slides-graphics-theme.R"))
+
+# chunks:
+# hide code and messages
+# cache everything
+opts_chunk$set(
+  include = FALSE, eval = TRUE, echo = FALSE, 
+  warning = FALSE, message = FALSE, collapse = TRUE, 
+  cache = TRUE, cache.path = here::here("slides", "MPMC-2019", "MPMC_cache/"),
+  fig.path = here::here("slides", "MPMC-2019", "MPMC_figs/"),
+  fig.retina = 2, fig.align = "center", dpi = 100
+)
+
+# Xaringan settings
+library("xaringan")
+library("xaringanthemer")
+
+primary <- "#cb4b16"
+secondary <- "#268bd2"
+
+duo_accent(primary_color = primary, 
+            secondary_color = secondary,
+            # header_font_family = "Minion Pro", 
+            # text_font_family = "Myriad Pro", 
+            header_font_google = google_font("Crimson Text"),
+            text_font_google = google_font("Source Sans Pro"), 
+            code_font_google = google_font("Inconsolata"), 
+            text_bold_color = secondary,
+            code_inline_background_color    = "#F5F5F5", 
+            table_row_even_background_color = "white", 
+            extra_css = 
+              list("h1, h2, h3" = list("font-style" = "italic",
+                                       "font-weight" = "bold"),
+                   # ".title-slide, .title-slide h1, .title-slide h2, .title-slide h3" = list("font-style" = "normal",
+                   #                           "font-weight" = "normal"),
+                   ".title-slide h1, .title-slide h3" = 
+                     list("font-style" = "normal"),
+                   ".title-slide h2" = list("font-style" = "normal"),
+                   ".title-slide h3" = list("font-style" = "normal",
+                                            "font-weight" = "normal"),
+                   ".remark-slide-content" = list("font-size" = "24px"), 
+                   ".remark-slide-number" = list("display" = "none"),
+                   ".remark-inline-code" = list("background" = "#F5F5F5", 
+                                                  #e7e8e2; /* darker */
+                                                "border-radius" = "3px", 
+                                                "padding" = "4px"),
+                   ".inverse h1, .inverse h2, .inverse h3" = 
+                     list("color" = "#FFFFFF"),
+                   ".left-code" = list("width" = "38%",
+                                       "height" = "92%",
+                                       "float" = "left"),
+                   ".right-plot" = list("width" = "60%", 
+                                        "float" = "right", 
+                                        "padding-left" = "1%")))
+
+img <- "slides/MPMC-2019/img"
+
+# graphics theme
+theme_set(
+  ggthemes::theme_base(base_family = "Source Sans Pro", base_size = 14) + 
+  theme(plot.background = element_blank(), 
+        axis.ticks = element_line(lineend = "square"), 
+        axis.ticks.length = unit(0.25, "lines"))
+)
+
+yel <- viridis::magma(1, alpha = 1, begin = 0.9, end = 0.9, direction = 1)
+purp <-  viridis::magma(1, alpha = 1, begin = 0.5, end = 0.5, direction = 1)
+```
+
+# Bayesian Causal Inference
+
+## ( in Political Science )
+
+
+.pull-left[
+
+```{r title-fig, include = TRUE, out.width = "100%", fig.width = 5, fig.height = 3}
+tibble(x = seq(0, 1, .01),
+       b66 = dbeta(x, 6, 6),
+       b93 = dbeta(x, 9, 3),
+       b15 = dbeta(x, 1, 3)) %>%
+  gather(key = param, value = d, -x) %>%
+  ggplot(aes(x = x, y = d)) +
+    geom_line(aes(group = param)) +
+    theme_void()
+```
+
+```{r, eval = TRUE}
+hall_flat <- 
+  readRDS(here("data", "mcmc", "hall", "MC_linear-win-flat.RDS"))
+hall_wip <- 
+  readRDS(here("data", "mcmc", "hall", "brm-win_trunc.RDS"))
+
+# hall_hist <- 
+#   bind_rows(flat = ggs(hall_flat) %>% filter(Parameter == "alpha[1]"), 
+#             wip = ggs(hall_wip) %>% filter(Parameter == "b_control")) %>%
+#   print()
+
+
+# ggplot(hall_hist, aes(x = value)) +
+#   geom_histogram(aes(fill = Parameter),
+#                  position = "identity",
+#                  alpha = 0.2) 
+
+```
+
+]
+
+
+.center[
+<br>
+<br>
+**Michael DeCrescenzo** <br>
+University of Wisconsin–Madison <br>
+<br>
+Minnesota Political Methodology<br>
+Graduate Student Conference <br><br>
+April 26, 2019
+]
+
+---
+
+### Where is {Bayes $\cap$ Causal Inference} ?
+
+--
+
+How do depictions of polling uncertainty (MOE, range of vote shares, graphics) affect voters' feelings of certainty about an election outcome?
+
+--
+
+.left-code[
+
+Bayesian opportunities (combining info from multiple treatments w/ shared features)
+
+**Almost zero precedent?**
+]
+
+
+.right-plot[
+
+```{r, include = TRUE, out.width = "100%"}
+# this is broken now but it was 
+# CIs from the Decrescenzo et al. uncertainty experiment
+include_graphics(here(img, "uncertainty-means.png"))
+```
+]
+
+
+
+
+
+---
+
+class: middle, center, inverse
+
+# Legalize it?
+
+### What are sources of tension/misunderstanding?
+
+### How to do Bayes in inoffensive ways?
+
+---
+
+## What's in the paper
+
+--
+
+**No inherent conflict**
+
+- Shared goal: improving parameter estimation
+- This isn't trivial! (see NHST, randomization inference)
+
+
+--
+
+**Tensions?**
+
+- Priors don't fix confounding
+- Downweighting extremes, not upweighting hypotheses
+- Nonparametric minimalism vs. complex maximalism
+
+--
+
+**Practical advice for "skeptical" Bayesian causal inference**
+
+
+
+
+---
+
+class: center, middle, inverse
+
+## "Agreeable" Bayes
+
+
+---
+
+## Agreeable Bayes
+
+Don't touch the difference in means
+
+Model-heavy designs, secondary analyses, sensitivity tests
+
+Information, not belief!
+
+**Weakly informative priors**, regularization, downweighting vs. upweighting
+
+Bayesian opportunities:
+
+.pull-left[
+- Natural bounds, known scales
+- Multiple comparisons
+- Repeated measures
+]
+
+.pull-right[
+- Cluster randomization
+- Partial pooling
+- Other hierarchical data
+]
+
+
+
+
+---
+
+class: center, middle, inverse
+
+# Can Bayes fit into a potential outcomes framework?
+
+
+---
+
+## Potential Outcomes as Posterior Distributions
+
+$y_{i}$ (observed outcome) and $\tilde{y}_{i}$ (unobserved potential outcome)
+
+
+--
+
+**Posterior distribution of unobserved potential outcomes**
+
+\begin{align}
+  p\left(\tilde{y}_{i} \mid \mathbf{y}\right) &= \int p\left(\tilde{y}_{i}, \theta \mid \mathbf{y}\right) d\theta
+\end{align}
+
+--
+
+**Posterior distribution of unit-level treatment effects** ( $\tau_{i}$ )
+
+\begin{align}
+  p\left(\tau_{i} \mid \mathbf{y} \right) &= \int p\left(y_{i} - \tilde{y}_{i} \mid \mathbf{y}\right)d\theta
+\end{align}
+
+--
+
+(Rubin appears to prefer the Bayesian setup)
+
+
+---
+
+class: middle, center, inverse
+
+# Examples
+
+### Hall (2015) and Reeves et al. (2017)
+
+---
+
+class: center
+
+### Weak Information
+
+
+
+.pull-left[
+
+**DV = vote share**
+
+```{r, include = TRUE, out.width = "100%"}
+# now broken, was fig from Hall 2015 RDD plot
+include_graphics(here(img, "hall-vote.png"))
+```
+]
+
+--
+
+.pull-right[
+
+**DV = win prob**
+
+```{r, include = TRUE, fig.width = 5, fig.height = 4.5, out.width = "100%"}
+hall_flat %>%
+  spread_draws(alpha[trt], beta[trt]) %>%
+  crossing(running = seq(-.05, .05, .0001)) %>%
+  filter((trt == 1 & running <= 0) |
+         (trt == 2 & running >= 0)) %>%
+  mutate(yhat = alpha + beta*running) %>%
+  group_by(running, trt) %>%
+  summarize(mean = mean(yhat),
+            conf.low = quantile(yhat, .025),
+            conf.high = quantile(yhat, .975)) %>%
+  ggplot(aes(x = running, y = mean)) +
+    geom_ribbon(aes(ymin = conf.low, ymax = conf.high,
+                    group = trt),
+                fill = yel, alpha = 0.5) +
+    geom_line(aes(group = as.factor(trt))) +
+    geom_vline(xintercept = 0, color = "maroon") +
+    geom_line(aes( y = 0), linetype = 2) +
+    geom_line(aes( y = 1), linetype = 2) +
+    annotate(geom = "segment", x = -0.05, xend = -0.05,
+             y = 0, yend = 1, linetype = 2) +
+    annotate(geom = "segment", x = 0.05, xend = 0.05,
+             y = 0, yend = 1, linetype = 2) +
+    theme(panel.background = element_blank(),
+          panel.border = element_blank()) +
+    scale_y_continuous(breaks = seq(0, 1, .5), labels = percent) +
+    scale_x_continuous(labels = percent) +
+    labs(x = "Extremist Primary Margin",
+         y = "Probability of General Election Win") +
+    coord_cartesian(ylim = c(-0.2, 1.2))
+```
+]
+
+
+---
+
+class: center
+
+### Weak Information
+
+Each intercept $\sim \text{Uniform}\left(0,1 \right)$
+
+--
+
+```{r, include = TRUE, fig.width = 5, fig.height = 2.5, out.width = "70%"}
+hall_wip %>%
+  spread_draws(b_control, b_treat) %>%
+  mutate(treatment_effect = b_treat - b_control) %>%
+  summarize(estimate = mean(treatment_effect),
+            conf.low = quantile(treatment_effect, .025),
+            conf.high = quantile(treatment_effect, .975),
+            term = "treatment_effect") %>% 
+  bind_rows(wip = .,
+            flat = tidy(hall_flat, conf.int = TRUE),
+            .id = "prior") %>%
+  filter(term == "treatment_effect") %>%
+  ggplot(aes(x = fct_rev(prior), y= estimate)) +
+    geom_pointrange(aes(ymin = conf.low, ymax = conf.high)) +
+    coord_flip(xlim = c(0.5, 2.5), ylim = c(-1, 0)) +
+    labs(x = NULL, y = "Treatment Effect on Win Prob") +
+    scale_x_discrete(labels = c("Weak Info", "Flat Prior")) 
+```
+
+
+---
+
+
+.left-code[
+
+### Partial Pooling and Regularization
+
+DV = Approval of unilateral action by presidents. IV = policy tool/prerogative
+
+> At the same time, [...] the treatment effects displayed in [the figure] are uniformly positive, which suggests that providing more detailed information about the president’s behavior increases public support for that action.
+
+]
+
+.right-plot[
+
+```{r, include = TRUE, out.width = "80%"}
+# reeves presidential powers treatments figure
+include_graphics(here(img, "reeves-trt.png"))
+```
+]
+
+---
+
+.left-code[
+### Partial Pooling and Regularization
+
+**Hierarchical model lets the model learn about the distribution of similar treatments**
+
+- Each estimate is a Normal draw from its true mean
+
+- Each "true" treatment is an instance from a distribution of treatments 
+
+- Estimates the mean and variance of the entire distribution
+
+
+]
+
+--
+
+.right-plot[
+
+```{r}
+reeves <- readRDS(here("data", "processed", "reeves-treatments.Rds")) %>%
+  mutate(spec_label = str_replace_all(specification, "_", "/") %>% 
+                      str_replace_all("t/", "T/") %>% 
+                      tools::toTitleCase())
+```
+
+```{r, include = TRUE, out.width = "90%", fig.width = 5, fig.height = 5}
+ggplot(reeves, aes(x = (treatment), y = estimate)) +
+  geom_hline(yintercept = 0) +
+  geom_pointrange(
+    aes(ymin = conf.low, ymax = conf.high, color = spec_label), 
+    position = position_dodge(width = 0.5)
+  ) +
+  viridis::scale_color_viridis(
+    option = "magma", discrete = TRUE, end = 0.75
+  ) +
+  labs(x = NULL, y = "Treatment Effect",
+       color = "Pooling Priors") +
+  coord_cartesian(ylim = c(-.1, .2)) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.6), 
+        legend.position = c(0.8, 0.8),
+        legend.background = element_blank()) +
+  scale_y_continuous(labels = percent_format(suffix = " pp.", accuracy = 1))
+
+```
+]
+
+
+
+
+---
+
+class: middle
+
+# Bayesian Causal Inference
+
+## ( in Political Science )
+
+
+.pull-left[
+
+```{r title-fig, include = TRUE, out.width = "100%", fig.width = 5, fig.height = 3}
+```
+
+]
+
+
+.center[
+<br>
+<br>
+**Michael DeCrescenzo** <br>
+University of Wisconsin–Madison <br>
+<br>
+Minnesota Political Methodology<br>
+Graduate Student Conference <br><br>
+April 26, 2019
+]

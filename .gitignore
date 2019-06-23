@@ -24,3 +24,10 @@ code/*/*.rds
 
 
 writing/cache/
+slides/MPMC-2019/MPMC_figs
+writing/render-figs
+writing/render-cache
+data/mcmc
+data/processed
+replication/Imai-et-al_2011_mediation/.svn
+slides/MPMC-2019/MPMC_cache
