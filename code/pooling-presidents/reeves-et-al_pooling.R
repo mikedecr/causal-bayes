@@ -34,14 +34,14 @@ box_auth()
 # It looks like these CIs are thinner than in the main paper?
 raw <- 
   tribble(
-    ~ treatment, ~ estimate, ~ conf.low, ~ conf.high,
-    "Exec.\nAgreements", 0.090, 0.033, 0.146,
-    "Exec.\nOrders", 0.064, 0.007, 0.120,
-    "Nat. Sec.\nDirectives", 0.057, -0.0001, 0.113,
-    "Cabinet", 0.057, 0.003, 0.110,
-    "Military", 0.053, -0.001, 0.107,
-    "Proclamations", 0.032, -0.018, 0.082,
-    "Memoranda", 0.024, -0.030, 0.078
+    ~ treatment             , ~ estimate , ~ conf.low , ~ conf.high ,
+    "Exec.\nAgreements"     , 0.090      , 0.033      , 0.146       ,
+    "Exec.\nOrders"         , 0.064      , 0.007      , 0.120       ,
+    "Nat. Sec.\nDirectives" , 0.057      , -0.0001    , 0.113       ,
+    "Cabinet"               , 0.057      , 0.003      , 0.110       ,
+    "Military"              , 0.053      , -0.001     , 0.107       ,
+    "Proclamations"         , 0.032      , -0.018     , 0.082       ,
+    "Memoranda"             , 0.024      , -0.030     , 0.078
   ) %>%
   mutate(treatment = factor(treatment, levels = unique(treatment))) %>%
   group_by() %>%
@@ -132,10 +132,10 @@ mcmc_t_cauchy <- estimate(model = pool_t_cauchy, data = stan_data)
 mcmc_t_uniform <- estimate(model = pool_t_uniform, data = stan_data)
 
 
-saveRDS(mcmc_normal_cauchy, here("data", "estimates", "reeves", "mcmc_normal_cauchy.RDS"))
-saveRDS(mcmc_normal_uniform, here("data", "estimates", "reeves", "mcmc_normal_uniform.RDS"))
-saveRDS(mcmc_t_cauchy, here("data", "estimates", "reeves", "mcmc_t_cauchy.RDS"))
-saveRDS(mcmc_t_uniform, here("data", "estimates", "reeves", "mcmc_t_uniform.RDS"))
+saveRDS(mcmc_normal_cauchy, here("data", "mcmc", "reeves", "mcmc_normal_cauchy.RDS"))
+saveRDS(mcmc_normal_uniform, here("data", "mcmc", "reeves", "mcmc_normal_uniform.RDS"))
+saveRDS(mcmc_t_cauchy, here("data", "mcmc", "reeves", "mcmc_t_cauchy.RDS"))
+saveRDS(mcmc_t_uniform, here("data", "mcmc", "reeves", "mcmc_t_uniform.RDS"))
 
 
 # negative treatments?

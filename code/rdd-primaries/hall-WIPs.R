@@ -31,8 +31,8 @@ theme_set(
 )
 
 # party colors if necessary
-dblue <- "#259FDD"
-rred <- "#FC5E47"
+dblue <- "#0072B2 "
+rred <- "#D55E00"
 
 
 # ----------------------------------------------------
@@ -362,15 +362,15 @@ win_logit_prior <-
 
 
 win_lm %>%
-  saveRDS(here("data", "estimates", "hall", "brm-win_lm.RDS"))
+  saveRDS(here("data", "mcmc", "hall", "brm-win_lm.RDS"))
 win_flat %>%
-  saveRDS(here("data", "estimates", "hall", "brm-win_flat.RDS"))
+  saveRDS(here("data", "mcmc", "hall", "brm-win_flat.RDS"))
 win_trunc %>%
-  saveRDS(here("data", "estimates", "hall", "brm-win_trunc.RDS"))
+  saveRDS(here("data", "mcmc", "hall", "brm-win_trunc.RDS"))
 win_logit %>%
-  saveRDS(here("data", "estimates", "hall", "brm-win_logit.RDS"))
+  saveRDS(here("data", "mcmc", "hall", "brm-win_logit.RDS"))
 win_logit_mle %>%
-  saveRDS(here("data", "estimates", "hall", "brm-win_logit_mle.RDS"))
+  saveRDS(here("data", "mcmc", "hall", "brm-win_logit_mle.RDS"))
 
 
 # ---- means -----------------------

@@ -1,21 +1,24 @@
 ---
 # global document parameters
 title: |
-  Bayesian Causal Inference in Political Science
-author: 
-- Michael G. DeCrescenzo^[Ph.D. Candidate, Political Science, University of Wisconsin--Madison. I have received plenty of great feedback and advice from Matthew Blackwell, Barry Burden, William Christiansen, Andrew Heiss, Devin Judge-Lord, Michael Masterson, Anna Meier, Laura Meinzen-Dick, Evan Morier, Ellie Powell, Daniel Putman, Alex Tahk, Zach Warner, Jessica Weeks, and Dave Weimer, and Chagai Weiss.]
+  Bayesian Causal Inference in Political Science^[
+    Prepared for the Minnesota Political Methodology Colloquium Graduate Student Conference, April 2019.
+  ]
+author: |
+  Michael G. DeCrescenzo^[Ph.D. Candidate, Political Science, University of Wisconsin--Madison. Email: [decrescenzo@wisc.edu](mailto:decrescenzo@wisc.edu). I have received plenty of great feedback and advice from Matthew Blackwell, Barry Burden, William Christiansen, Andrew Heiss, Devin Judge-Lord, Michael Masterson, Anna Meier, Laura Meinzen-Dick, Evan Morier, Ellie Powell, Daniel Putman, Alex Tahk, Zach Warner, Jessica Weeks, and Dave Weimer, and Chagai Weiss.]
 # soon: Renshon, Shalef
 # send to: Blackwell, Jason A, Ryan P, Warner, Ben, Chagai, Heiss
 
 date: |
-  This version: `r format(Sys.time(), '%B %d, %Y')`.^[ View most recent committed version [here](https://github.com/mikedecr/causal-bayes/blob/master/writing/causal-bayes-paper.pdf).]
+  April 12, 2019
+# This version: `r format(Sys.time(), '%B %d, %Y')`.^[ View most recent committed version [here](https://github.com/mikedecr/causal-bayes/blob/master/writing/causal-bayes-paper.pdf).]
 abstract: |
   Causal inference and Bayesian analysis are two powerful and attractive methodological approaches for conducting empirical research, but rarely in political science does a single study employ both approaches. This stands in contrast to other fields---such as psychology, epidemiology, and biostatistics---where Bayesian and causal methods are more commonly applied together. In this paper I argue that the partition between these methodological schools in political science has no inherent basis in their fundamental goals, which are actually quite compatible: generating the best parameter estimates. In fact, Bayesian analysis provides a number of distinct benefits for estimating statistical models for causal inference. The methodological partition instead owes itself to informal norms surrounding each school in empirical political science. I discuss these sources of normative tension, describe go-to practices doing Bayesian inference for a skeptical audience, and demonstrate these practices using real examples from recent political science publications. The purpose of the paper is *not* to convince all causal inference practitioners to adopt Bayesian estimation. The purpose is to show that Bayesian methods deserve space in the study of causal effects because they improve causal estimates and provide an appealing framework for evaluating causal evidence.
 
   \begin{center}
-    \textbf{
-      \faSmileO\ This paper is aggressively unfinished \faSmileO \\ 
-      \faSmileO\ Please do not cite without permission or circulate recklessly \faSmileO\ 
+    \textbf{\sffamily 
+      \faSmileO\ This paper is a work in progress \faSmileO \\ 
+      \faSmileO\ Please use care if citing or circulating \faSmileO\ 
     }
   \end{center}
 
@@ -38,6 +41,7 @@ bibliography: "/Users/michaeldecrescenzo/Dropbox/bib.bib"
 biblio-style: "/Users/michaeldecrescenzo/Dropbox/apsa-leeper.bst"
 fontsize: 12pt
 geometry: margin = 1.25in
+# geometry: margin = 1in
 indent: true
 linkcolor: black
 urlcolor: violet
@@ -66,14 +70,15 @@ output:
 \newpage
 
 <!-- TOC page -->
-\tableofcontents
-\newpage
+<!-- \tableofcontents
+\newpage -->
 
 <!-- BODY -->
 \hypersetup{pageanchor = true}
 \pagenumbering{arabic}
-<!-- \onehalfspacing -->
-\doublespacing
+<!-- \twocolumn -->
+\onehalfspacing
+<!-- \doublespacing -->
 <!--  -->
 
 
@@ -100,14 +105,14 @@ knitr::opts_chunk$set(
   eval = TRUE, echo = FALSE, include = FALSE, 
   warning = FALSE, message = FALSE,
   cache = TRUE, collapse = TRUE,
-  fig.path = "figs/",
-  cache.path = here::here("writing", "cache", ""),
+  fig.path = here::here("writing", "render-figs/"),
+  cache.path = here::here("writing", "render-cache/"),
   dev = "cairo_pdf", fig.align = "center"
 )
 
 # graphics theme
 theme_set(
-  ggthemes::theme_base(base_family = "Source Sans Pro", base_size = 14) + 
+  ggthemes::theme_base(base_family = "Fira Sans", base_size = 13) + 
   theme(plot.background = element_blank(), 
         axis.ticks = element_line(lineend = "square"), 
         axis.ticks.length = unit(0.25, "lines"))
@@ -336,9 +341,9 @@ and $\varepsilon_{i}$ is response-level error. For Bayesian estimation, we would
 \end{align}
 This example assumes unequal variance across levels of $z$. We would then include priors for the model parameters, which I will black-box with generic $p(\cdot)$ statements..
 \begin{align}
-  \alpha &\sim p(\cdot) &
-  \beta &\sim p(\cdot) &
-  \sigma_{z} &\sim p(\cdot)
+  \alpha &\sim p(\alpha) &
+  \beta &\sim p(\beta) &
+  \sigma_{z} &\sim p(\sigma_{z})
 \end{align}
 A deeper discussion about priors can be found in Section&nbsp;\@ref(sec:advice). To fit the model, we condition the parameters on the data and achieve posterior distributions for $\alpha$, $\beta$, and $\sigma$. If the priors are flat, then the posterior distribution for the parameters will be proportional to the likelihood. Otherwise, the posterior distribution will retain some contribution from the prior. All the parameters have the same meaning as in a non-Bayesian model; $\beta$ still represents the causal parameter, but we have estimated it using a prior. It is ultimately a modest intervention on the way experiments are ordinarily interpreted.
 
@@ -358,10 +363,10 @@ Under this setup, the average treatment effect is $\beta = \mu_{z = 1} - \mu_{z 
 
 There are plenty more things a researcher could consider when estimating a causal model with a Bayesian approach. These are circumstances when we have knowledge about how a model should behave that the model is not guaranteed to learn from the data.
 
-- **Bounds:** We often deal with parameters that have natural bounds. Variance parameters will be positive. Probabilities will not exceed $0$ or $1$.
-- **Scale:** If we know the scale of an outcome variable, we know a lot about what parameters we could expect from the model that generates that data. Standardizing variables in a model can make it easier to set expectations for a model even before outcome data are collected. 
-- **Multilevel data:** Lots of datasets have hierarchical structure. In experimental and causal inference contexts this could be included by clustered randomization, repeated observations within-unit, correlated error across time periods or within clusters of data, and more. Bayesian models allow the researcher to directly estimate the variance at each hierarchical level, sidestepping the need for post-hoc standard error corrections.
-- **Regularization:** Some experiments use several treatments and either compute marginal treatment effects or complex interactions. As the number of interesting comparisons multiply, priors can be used to do partial pooling, regularize estimates against noisy comparisons, and counter the "multiple comparisons" problem.
+- Bounds: We often deal with parameters that have natural bounds. Variance parameters will be positive. Probabilities will not exceed $0$ or $1$.
+- Scale: If we know the scale of an outcome variable, we know a lot about what parameters we could expect from the model that generates that data. Standardizing variables in a model can make it easier to set expectations for a model even before outcome data are collected. 
+- Multilevel data: Lots of datasets have hierarchical structure. In experimental and causal inference contexts this could be included by clustered randomization, repeated observations within-unit, correlated error across time periods or within clusters of data, and more. Bayesian models allow the researcher to directly estimate the variance at each hierarchical level, sidestepping the need for post-hoc standard error corrections.
+- Regularization: Some experiments use several treatments and either compute marginal treatment effects or complex interactions. As the number of interesting comparisons multiply, priors can be used to do partial pooling, regularize estimates against noisy comparisons, and counter the "multiple comparisons" problem.
 
 Political scientists have put Bayesian analysis to work in plenty of observational work for measurement [@clinton2004statistical; @kernell2009giving; @park2004bayesian], text data [@grimmer:2010:bayes-topic-model], heterogeneous effects [@western:1998:causal-heterogeneity], meta-analysis and model averaging [@montgomery-nyhan:2010-bma], time series [@brandt-freeman:2006:bayes-ts], and time-series cross-sectional data [@shor-et-al:2007:bayes-tscs]. It is far less common in experimental and observational causal inference work, but not truly absent. Bayesian methods have been employed to tackle heterogeneous treatments [@green-kern:2012:bart; see also @hill:2011:bart], modeling noncompliance and nonresponse [@horiuchi2007designing], multi-stage models such as instrumental variables [@hollenbach-et-al:2018:bayes-iv], and conjoint experiments [@jensen-et-al:2019:city-polarization]. Other researchers outside of political science have explored Bayesian regression discontinuity outside of political science [e.g.\ @chib-jacobi:2016:bayes-rdd; @branson-at-al:2019:bayes-rdd]. It is notable that Bayesian analysis in causal inference seems relegated to extraordinary modeling problems rather than day-to-day analysis tasks. 
 
@@ -485,7 +490,7 @@ g_invalid_trt <-
              vjust = -0.2) +
     annotate(geom = "segment", x = -1, y = 150, xend = -0.75, yend = 100)
 
-g_invalid_pars + g_invalid_trt
+g_invalid_pars / g_invalid_trt
 ```
 
 First is a regression discontinuity study examining the effect of ideological extremism in U.S.\ House elections @hall:2015:extremists. When a primary election between an extremist and a non-extremist candidate is decided by a "coin-flip" result, the discontinuity provides identifying variation in candidate ideology for the general election. The author finds that when the extremist candidate wins the primary, the probability of winning the general election falls by 53 percentage points. This result is obtained from a linear probability model (LPM), which is often preferred because it is simple and can recover unbiased treatment effects at the discontinuity under the right assumptions [@lee-lemieux:2010:rdd]. In this case, we know that the probability of winning the general election is bounded at 0% and 100%, but the model does not. Researchers often accept this "unrealistic" behavior of LPMs because they are easy to interpret. This is understandable, but if one of the advantages of causal inference is to be realistic [@samii:2016:causal-empiricism], it is fair to say that the treatment effect is important enough that it should not be contaminated by this potential problem in the model. In this particular example---which is only a fraction of the larger study, to be clear---the model happens to place a substantial amount of posterior mass on treatment effects that we would consider impossible.
@@ -495,7 +500,7 @@ I demonstrate this behavior of the model in Figure&nbsp;\@ref(fig:plot-hall-flat
   \todo{howmuch?}
   <!-- how much lower variance? -->
 
-```{r plot-hall-flat-params, results = 'hide', fig.show = 'asis', include = TRUE, fig.width = 8, fig.height = 3, out.width = "100%", fig.cap = "Histogram of posterior samples from Hall's \\citeyearpar{hall:2015:extremists} regression discontinuity design, recreated using a Bayesian model with flat priors. Dashed lines in left two panels indicate the region of possible parameter values."}
+```{r plot-hall-flat-params, results = 'hide', fig.show = 'asis', include = TRUE, fig.width = 5, fig.height = 6, out.width = "100%", fig.cap = "Histogram of posterior samples from Hall's \\citeyearpar{hall:2015:extremists} regression discontinuity design, recreated using a Bayesian model with flat priors. Dashed lines in left two panels indicate the region of possible parameter values."}
 ```
 
 The second application in this paper is an experimental study of public opinion on unilateral actions by presidents [@reeves-et-al:2017:unilateral]. The original study uses a series of survey experiments to understand why U.S.\ citizens' approval of unilateral action varies across legal and political contexts. I focus on one experiment that manipulated the specific policy tool or prerogative used by the president to justify unilateral action. The control group was asked to state their agreement with the statement, "Presidents should be able to make new policies without having those policies voted on by Congress." Treatments modified this statement; for example, "Presidents should be able to issue *national security directives* to make new policies without having those policies voted on by Congress" (emphasis mine). The set of policy instruments includes executive agreements, executive orders, national security directives, directing cabinet officials, initiating military operations, issuing proclamations, and issuing memoranda. 
@@ -580,7 +585,7 @@ ggplot(data = logit_example, aes(x = prob)) +
                      expand = expand_scale(mult = c(0, .3)))
 ```
 
-One common example for demonstrating weak information is logistic regression. The log-odds scale extends from $-\infty$ to $+\infty$, but only a small fraction of the log-odds scale maps to probabilities between 1 and 99 percent. For a control group with a predicted probability of 50%, a treatment effect of 3.0 on the log odds scale is an effect of more than 40 percentage points.^[
+One common example for demonstrating weak information is logistic regression. The log-odds scale extends from $-\infty$ to $+\infty$, but only a small segment of the log-odds scale maps to probabilities that are useful for typical social science. For a control group with a predicted probability of 50%, a treatment effect of 3.0 on the log odds scale is an effect of more than 40 percentage points.^[
   $\mathrm{invlogit}(3) = `r round(plogis(3), 3)`$
 ]
 So for most social science studies, a prior in a logistic regression can safely assume that coefficients of $3$ or larger are pretty unlikely. Figure&nbsp;\@ref(fig:plot-logit-treatment) shows how normal priors on the log odds scale translate into the probability scale. The top-right panel shows that a fairly weak $\mathrm{Normal}\left(0, 5\right)$ prior on the log-odds scale drastically upweighting very large and very small probabilities. A truly flat prior would be even more extreme, but the prior is implicitly flat for a traditional MLE logit model. It isn't until the prior standard deviation is near $1.5$ that the prior looks approximately flat on the probability scale. Priors like $\mathrm{Normal}\left(0, 1\right)$ and $\mathrm{Normal}\left(0, 0.5\right)$ might be too informative for general recommendation, but they are still wider than the effect sizes we often observe in political science.
@@ -652,7 +657,7 @@ hall_saved <- long_hall_brm %>%
 ```
 
 
-```{r plot-hall-post, results = 'hide', fig.show = 'asis', include = TRUE, fig.width = 8, fig.height = 3, out.width = "100%", fig.cap = "Comparison on posterior draws from Hall's \\citeyearpar{hall:2015:extremists} RDD with flat vs.\\ weakly informative priors."}
+```{r plot-hall-post, results = 'hide', fig.show = 'asis', include = TRUE, fig.width = 5, fig.height = 6, out.width = "100%", fig.cap = "Comparison on posterior draws from Hall's \\citeyearpar{hall:2015:extremists} RDD with flat vs.\\ weakly informative priors."}
 # 
 hall_ints <- long_hall_brm %>%
   filter(param != "Treatment Effect of Extremism\nat Discontinuity") %>%
@@ -687,7 +692,7 @@ hall_trts <- long_hall_brm %>%
     theme(legend.position = c(0.8, 0.8),
           legend.background = element_blank())
 
-hall_ints + hall_trts
+hall_ints / hall_trts
 
 ```
 

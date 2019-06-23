@@ -8,7 +8,8 @@
 % \usepackage{microtype}   % microtypography
 
 \usepackage[lf, mathtabular, minionint]{MinionPro} % serif
-\usepackage{MyriadPro}                             % sans family
+% \usepackage{MyriadPro}                             % sans family
+\usepackage[scaled = 0.9]{FiraSans}
 \usepackage[varqu, scaled = 0.95]{zi4}             % mono w/ straight quotes
 % \usepackage{mathptmx} % serif = times (with math)
 % \usepackage{helvet} % sens-serif = helvetica clone
@@ -38,7 +39,7 @@
 \usepackage{titling}
 
   % title field
-  \pretitle{\begin{center} \LARGE}
+  \pretitle{\begin{center} \LARGE \sffamily \bfseries}
   \posttitle{\par\end{center}\vskip 12pt}
 
   % author field
@@ -48,19 +49,26 @@
               \par\end{center}}
 
   % date field
-  \predate{\begin{center}\large}
+  \predate{\begin{center}}
   \postdate{\par\end{center}}
 
 % ABSTRACT
-% \usepackage{abstract}
-%   \renewcommand{\abstractname}{}    % clear the title
+\usepackage{abstract}
+  \renewcommand{\abstractname}{\sffamily \bfseries Abstract}    % clear the title
 %   \renewcommand{\absnamepos}{empty} % originally center
 
 % % SECTIONS
-\usepackage[small, bf]{titlesec}
-  \titleformat*{\subsection}{\bf \itshape}
-  \titleformat*{\subsubsection}{\itshape} 
-  \titleformat*{\paragraph}{\itshape} 
+% \usepackage[small, bf]{titlesec}
+%   \titleformat*{\subsection}{\bf \itshape}
+%   \titleformat*{\subsubsection}{\itshape} 
+%   \titleformat*{\paragraph}{\itshape} 
+
+% Fira Version??
+\usepackage[small, sf, bf]{titlesec}
+  \titleformat*{\subsection}{\sffamily \bfseries  \itshape}
+  \titleformat*{\subsubsection}{\sffamily \itshape}
+  \titleformat*{\paragraph}{\sffamily \bfseries}
+\setcounter{secnumdepth}{3}
 
 \setcounter{tocdepth}{2}
 \setcounter{secnumdepth}{3}
