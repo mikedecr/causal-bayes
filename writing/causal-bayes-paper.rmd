@@ -5,7 +5,7 @@ title: |
     Prepared for the Minnesota Political Methodology Colloquium Graduate Student Conference, April 2019.
   ]
 author: |
-  Michael G. DeCrescenzo^[Ph.D. Candidate, Political Science, University of Wisconsin--Madison. Email: [decrescenzo@wisc.edu](mailto:decrescenzo@wisc.edu). I have received plenty of great feedback and advice from Matthew Blackwell, Barry Burden, William Christiansen, Andrew Heiss, Devin Judge-Lord, Michael Masterson, Anna Meier, Laura Meinzen-Dick, Evan Morier, Ellie Powell, Daniel Putman, Alex Tahk, Zach Warner, Jessica Weeks, and Dave Weimer, and Chagai Weiss.]
+  Michael G. DeCrescenzo^[Ph.D. Candidate, Political Science, University of Wisconsin--Madison. Email: [`decrescenzo@wisc.edu`](mailto:decrescenzo@wisc.edu). I have received plenty of great feedback and advice from Matthew Blackwell, Barry Burden, William Christiansen, Andrew Heiss, Devin Judge-Lord, Michael Masterson, Anna Meier, Laura Meinzen-Dick, Evan Morier, Ellie Powell, Daniel Putman, Alex Tahk, Zach Warner, Jessica Weeks, and Dave Weimer, and Chagai Weiss.]
 # soon: Renshon, Shalef
 # send to: Blackwell, Jason A, Ryan P, Warner, Ben, Chagai, Heiss
 
