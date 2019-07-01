@@ -10,8 +10,7 @@ author: |
 # send to: Blackwell, Jason A, Ryan P, Warner, Ben, Chagai, Heiss
 
 date: |
-  April 12, 2019
-# This version: `r format(Sys.time(), '%B %d, %Y')`.^[ View most recent committed version [here](https://github.com/mikedecr/causal-bayes/blob/master/writing/causal-bayes-paper.pdf).]
+  This version: `r format(Sys.time(), '%B %d, %Y')`.^[ View most recent committed version [here](https://github.com/mikedecr/causal-bayes/blob/master/writing/causal-bayes-paper.pdf).]
 abstract: |
   Causal inference and Bayesian analysis are two powerful and attractive methodological approaches for conducting empirical research, but rarely in political science does a single study employ both approaches. This stands in contrast to other fields---such as psychology, epidemiology, and biostatistics---where Bayesian and causal methods are more commonly applied together. In this paper I argue that the partition between these methodological schools in political science has no inherent basis in their fundamental goals, which are actually quite compatible: generating the best parameter estimates. In fact, Bayesian analysis provides a number of distinct benefits for estimating statistical models for causal inference. The methodological partition instead owes itself to informal norms surrounding each school in empirical political science. I discuss these sources of normative tension, describe go-to practices doing Bayesian inference for a skeptical audience, and demonstrate these practices using real examples from recent political science publications. The purpose of the paper is *not* to convince all causal inference practitioners to adopt Bayesian estimation. The purpose is to show that Bayesian methods deserve space in the study of causal effects because they improve causal estimates and provide an appealing framework for evaluating causal evidence.
 
