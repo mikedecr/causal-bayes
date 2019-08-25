@@ -6,6 +6,21 @@ output:
   knit: function() stop("NO KNIT")
 ---
 
+
+# The goal should be...?
+
+1. Articulate a Bayesian interpretation of causal inference under potential outcomes
+  - bonus: under DAGs
+  - what is an unobserved potential outcome
+    - distribution of the data in the comparison group is a reasonable prior! learning the prior from the data
+    - is this another paper? Bayesian inference about unit-level treatment effects
+    - *would have to do reading about the way people discuss the assumptions for unit-level treatment effects*
+  - how to assimilate evidence / sensitivity testing
+2. What's special about a "Bayesian experiment"
+3. Examples for ordinary causal inference
+
+
+
 # Feedback
 
 Hollyer
@@ -18,6 +33,9 @@ Evan M
 
 Chagai
 
+# Papers I missed
+
+https://alexandercoppock.com/papers/GKCFLZ_lawnsigns.pdf
 
 
 
