@@ -7,6 +7,106 @@ output:
 ---
 
 
+# Reading List:
+
+- [ ] Imbens Rubin 1997
+- [ ] Rubin 1978
+- [ ] Bayes double robust
+- [ ] Rubin et al 2010 (or is it 2008?)
+
+
+
+
+
+# Baldi & Shahbaba: Bayesian Causality (TAS)
+
+
+"The main advantage of the approach is its connection to the axiomatic foundations of the Bayesian framework"
+
+- What would *I* say here
+- only with Bayesian analysis can you make direct inference about the probability distribution of the parameter
+
+Framework: $p(H \mid D, \mathcal{B})$, belief in hypothesis $H$ given data $D$ and prior beliefs $\mathcal{B}$
+
+- under this framework, "non-Bayesian" analysis is a special case of Bayesian analysis where $\mathcal{B}$ is *positively* (that is, actively) set to be flat. So it is a misspecified picture of the world.
+  - Frequentism: $p(\hat{\theta} \mid D, \theta = 0)$
+  - Bayes: $p(\theta \mid D)$ which implies $p(H \mid \theta, D)$ if we have a function that maps $\theta$ to $H$
+- "This frame- work, as described in Section 3, focuses on computing posterior probabilities, but it does not prescribe how to use these proba- bilities, for instance in hypothesis testing."
+  - if you had to do it, Bayes typically uses decision theory
+  - if you NEEDED a 0 or 1 loss function, minimizing posterior risk means choosing the model with greater posterior odds
+  - posterior odds = bayes factor x prior odds 
+  - == Bayes factor when prior odds are flat (I don't prefer either hypothesis), since priors cancel
+
+
+Effects of causes vs causes of effects
+
+- political science causal inference is in "effects of causes"
+
+
+Rubin 1978: Bayesian analysis is challenging for "non-ignorable" treatment assignment, but fine for confounded-but-ignorable or unconfounded assignment
+
+- is this just saying that priors don't fix confounding?
+
+
+
+## Barnfield Thread 
+
+- why do they say that nothing but randomization gets you a causal effect in Frequentism
+- Cool, so it's Bayes with an explicitly causal hypothesis. (Or is it not?)
+  - Well. You could do Bayes with a "traditional" causal model, then it's just Bayesian estimation of a causal model. You get a posterior distribution over parameters, but your judgment about a hypothesis isn't an explicit function of the model (without extra decision rules added on)
+  - BAYESIAN CAUSALITY seems more like a top-to-bottom refashioning of the problem where the target is a *posterior distribution about a hypothesis* so it all leads up to that
+- Why does the Frequentist approach NOT get the causal effect in the observational study?
+  - "I get that for the sake of exposition we might be asked to assume that there are no confounders of the relationship (in this case, between smoking during pregnancy and baby weight), but this assumption should be relevant for both approaches, right? (4/n)" 
+    - Yes? The causal model is derived before the estimation model (unless this dualism is destroyed by "Bayesian causality")
+  - "Is it not true of Bayes too, that unless we make model-implied adjustments (which should be estimation-blind, right?) then we cannot get at causal effects? Surely Baldi and Shahbaba's approach doesn't overcome the need for this? (5/n)"
+    - My only guess is that the difference here is for *individual* causal effects, which are integrating over the response distribution as well as the treatment effect
+  - "Or am I misunderstanding their point, and actually they are simply saying you can't make causal claims meeting *their meaning of Bayesian causality* (see tweet two) with a frequentist approach? (7/7)"
+    - this is probably it
+- ignorant of the contours surrounding "causes of effects" approaches
+
+
+1. it isn't frequentist in the sense that "these are the data we have, we have only one sample, and we can't repeat the sample" in which case I think the claim is technically correct but we're so steeped in an ideology of flatly ignoring that in PS that we don't even parse the critique when we see it in the wild lmao
+
+
+## Blog: 
+
+Bayesian analysis of causal parameters vs. Bayesian analysis of causal hypotheses
+
+- $p(\bar{\tau} \mid \mathbf{y})$ vs. $p(H \mid \mathbf{y}, \mathcal{B})$
+
+
+
+
+# MPMC
+
+Hollyer:
+
+- Good:
+  - WIPs
+  - partial pooling
+  - clarity and usefulness 
+- Tensions
+  - consistency and bias
+  - see Jackman's textbook
+  - unmentioned benefit: small samples (quasi-experiments, matching) 
+- Hall example:
+  - fix the LPM, not the priors
+  - maybe not the best example
+  - (*or maybe I should explain it better*)
+- More:
+  - Bayes for Bayes, not Bayes for MCMC
+  - You're battling on philosophical grounds, so fight!
+
+Gustavo
+
+- Good agenda setting
+  - think about what the fight will and won't be
+- two papers?
+  - one for skeptical causal inference crowd
+  - one for Bayes-curious applied people
+
+
+
 # The goal should be...?
 
 1. Articulate a Bayesian interpretation of causal inference under potential outcomes

@@ -1,16 +1,17 @@
 ---
 # global document parameters
 title: |
-  Causal Inference from a Bayesian Perspective^[
+  A Bayesian View of Causal Inference in Political Science^[
     Previously presented at the Minnesota Political Methodology Colloquium Graduate Student Conference, April 2019.
   ]
+# causal inference from a Bayesian perspective
 author: |
-  Michael G. DeCrescenzo^[Ph.D. Candidate, Political Science, University of Wisconsin--Madison. Email: [`decrescenzo@wisc.edu`](mailto:decrescenzo@wisc.edu). I have received plenty of great feedback and advice from Matthew Blackwell, Barry Burden, William Christiansen, Andrew Heiss, Devin Judge-Lord, Michael Masterson, Anna Meier, Laura Meinzen-Dick, Evan Morier, Ellie Powell, Daniel Putman, Alex Tahk, Zach Warner, Jessica Weeks, and Dave Weimer, and Chagai Weiss.]
+  Michael G. DeCrescenzo^[Ph.D. Candidate, Political Science, University of Wisconsin--Madison. Email: [`decrescenzo@wisc.edu`](mailto:decrescenzo@wisc.edu). I have received plenty of great feedback and advice from Matthew Blackwell, Barry Burden, William Christiansen, Gustavo Diaz, Andrew Heiss, James Hollyer, Devin Judge-Lord, Michael Masterson, Anna Meier, Laura Meinzen-Dick, Evan Morier, Ellie Powell, Daniel Putman, Alex Tahk, Zach Warner, Jessica Weeks, and Dave Weimer, and Chagai Weiss.]
 # soon: Renshon, Shalef
 # send to: Blackwell, Jason A, Ryan P, Warner, Ben, Chagai, Heiss
 
 date: |
-  | Commit \texttt{`r system("git log --pretty=%t", intern = TRUE)[1]`} on branch \texttt{`r system("git symbolic-ref --short HEAD", intern = TRUE)`}
+  | Commit \texttt{`r system("git log --pretty=%t", intern = TRUE)[1]`} on branch \texttt{`r system("git symbolic-ref --short HEAD", intern = TRUE)`}\footnote{Commit message: \texttt{`r system("git log --pretty=%s", intern = TRUE)[1]`}}
   | Compiled `r format(Sys.time(), '%B %d, %Y')`
   | Most recent online version [here](https://github.com/mikedecr/causal-bayes/blob/master/writing/causal-bayes-paper.pdf).
 abstract: |
